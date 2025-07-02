@@ -1,0 +1,3 @@
+type loginDto = {
+  accessToken: string;
+};
