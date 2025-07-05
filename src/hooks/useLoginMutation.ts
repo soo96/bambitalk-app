@@ -11,13 +11,13 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
   const loginMutation = useMutation({
     mutationFn: postLogin,
     onSuccess: async (data) => {
-      const { needSignup, accessToken, refreshToken } = data.data;
+      const { needSignup, kakaoId, accessToken, refreshToken } = data.data;
 
       if (needSignup) {
         showSuccessToast('BambiTalk에 오신 걸 환영해요 👶');
         setTimeout(() => {
-          navigation.replace('Signup');
-        }, 1500);
+          navigation.replace('Signup', { kakaoId });
+        }, 1000);
         return;
       }
 
@@ -26,8 +26,8 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
 
       showSuccessToast('로그인 성공', 'BambiTalk에 오신 걸 환영해요 👶');
       setTimeout(() => {
-        navigation.navigate('MyChildProfile');
-      }, 1500);
+        navigation.replace('MyChildProfile');
+      }, 1000);
     },
     onError: () => {
       showErrorToast('🚨 로그인에 실패했어요.');

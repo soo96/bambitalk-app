@@ -1,10 +1,13 @@
 import { RootStackParamList } from '@/app/RootStack';
+import LoadingOverlay from '@/components/LoadingOverlay';
 import InputField from '@/components/ui/InputFeild';
 import PrimaryButton from '@/components/ui/PrimaryButton';
 import SelectableButtonGroup from '@/components/ui/SelectableButtonGroup';
 import { Option } from '@/components/ui/SelectableButtonGroup';
 import COLORS from '@/constants/colors';
+import useSignupMutation from '@/hooks/useSignupMutation';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import {
@@ -16,18 +19,23 @@ import {
 } from 'react-native';
 
 type SignupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>;
+type SignupScreenRouteProp = RouteProp<RootStackParamList, 'Signup'>;
 
 interface SignupScreenProps {
   navigation: SignupScreenProp;
+  route: SignupScreenRouteProp;
 }
 
 const { width } = Dimensions.get('window');
 
-const SignupScreen = ({ navigation }: SignupScreenProps) => {
+const SignupScreen = ({ navigation, route }: SignupScreenProps) => {
   const [nickname, setNickname] = useState('');
-  const [role, setRole] = useState<string | null>(null);
+  const [role, setRole] = useState<string>('');
   const [touched, setTouched] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const { kakaoId } = route.params;
+
+  const { mutateSignup, isPending } = useSignupMutation(navigation);
 
   const genderOptions: Option[] = [
     { label: '아빠에요🙋🏻‍♂️', value: 'DAD' },
@@ -48,9 +56,12 @@ const SignupScreen = ({ navigation }: SignupScreenProps) => {
     }
   };
 
-  const handleSignup = () => {};
-
+  //TODO: 초대코드로 가입
   const handlePressLink = () => {};
+
+  const handleSignup = async () => {
+    await mutateSignup({ kakaoId, nickname, role });
+  };
 
   return (
     <DefaultLayout headerTitle="회원가입">
@@ -94,6 +105,7 @@ const SignupScreen = ({ navigation }: SignupScreenProps) => {
           />
         </View>
       </View>
+      <LoadingOverlay visible={isPending} />
     </DefaultLayout>
   );
 };

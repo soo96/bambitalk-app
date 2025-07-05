@@ -7,3 +7,13 @@ export const postLogin = async ({ accessToken }: loginDto) => {
 
   return result.data;
 };
+
+export const postSignup = async ({ kakaoId, nickname, role }: signupDto) => {
+  const result = await axiosClient.post('/auth/signup', {
+    kakaoId,
+    nickname,
+    role,
+  });
+
+  return result.data;
+};

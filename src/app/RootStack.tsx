@@ -6,7 +6,7 @@ import SignupScreen from '@/screens/Signup';
 
 export type RootStackParamList = {
   Login: undefined;
-  Signup: undefined;
+  Signup: { kakaoId: string };
   ChildInfoMain: undefined;
   MyChildProfile: undefined;
 };
