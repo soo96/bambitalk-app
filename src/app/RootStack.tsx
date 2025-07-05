@@ -1,12 +1,14 @@
-import LoginScreen from '@/screens/LoginScreen';
-import ChildInfoMainScreen from '@/screens/ChildInfoMainScreen';
+import LoginScreen from '@/screens/Login';
+import ChildInfoMainScreen from '@/screens/ChildInfoMain';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MyChildProfileScreen from '@/screens/ChildMainScreen';
+import MyChildProfileScreen from '@/screens/MyChildProfile';
+import SignupScreen from '@/screens/Signup';
 
 export type RootStackParamList = {
   Login: undefined;
-  ChildInfoMainScreen: undefined;
-  MyChildProfileScreen: undefined;
+  Signup: undefined;
+  ChildInfoMain: undefined;
+  MyChildProfile: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -20,12 +22,17 @@ const RootStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="ChildInfoMainScreen"
+        name="Signup"
+        component={SignupScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ChildInfoMain"
         component={ChildInfoMainScreen}
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MyChildProfileScreen"
+        name="MyChildProfile"
         component={MyChildProfileScreen}
         options={{ headerShown: false }}
       />

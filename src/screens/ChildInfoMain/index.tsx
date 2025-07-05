@@ -1,13 +1,14 @@
 import { RootStackParamList } from '@/app/RootStack';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StyleSheet, Text, View } from 'react-native';
+import { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 
-type MyChildProfileScreenProps = NativeStackScreenProps<
+type ChildInfoMainScreenProps = NativeStackScreenProps<
   RootStackParamList,
-  'MyChildProfileScreen'
+  'ChildInfoMain'
 >;
 
-const MyChildProfileScreen = ({ navigation }: MyChildProfileScreenProps) => {
+const ChildInfoMainScreen = ({ navigation }: ChildInfoMainScreenProps) => {
   return (
     <View style={styles.container}>
       <Text style={styles.text}>아이정보 입력</Text>
@@ -26,4 +27,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyChildProfileScreen;
+export default ChildInfoMainScreen;
