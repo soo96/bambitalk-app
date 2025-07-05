@@ -5,7 +5,7 @@ export const showBaseToast = (text: string) => {
     type: 'selectedToast',
     text1: text,
     position: 'bottom',
-    visibilityTime: 2000,
+    visibilityTime: 1500,
   });
 };
 
@@ -15,7 +15,7 @@ export const showSuccessToast = (text1: string, text2?: string) => {
     text1: text1,
     text2: text2,
     position: 'bottom',
-    visibilityTime: 2000,
+    visibilityTime: 1500,
   });
 };
 
@@ -25,6 +25,6 @@ export const showErrorToast = (text1: string, text2?: string) => {
     text1: text1,
     text2: text2,
     position: 'bottom',
-    visibilityTime: 2000,
+    visibilityTime: 1500,
   });
 };
