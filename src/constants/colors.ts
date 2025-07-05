@@ -1,0 +1,14 @@
+const COLORS = {
+  PRIMARY: '#F85F73',
+  SECONDARY: '#FBE8D3',
+  GRAY_DARK: '#928A97',
+  GRAY_LIGHT: '#F5F5F5',
+  TEXT_PRIMARY: '#283C63',
+  ERROR: '#FF3B30',
+  SUCCESS: '#34C759',
+  NAVY_LIGHT: '#A0AEC0',
+  WHITE: '#FFFFFF',
+  BLACK: '#000000',
+};
+
+export default COLORS;
