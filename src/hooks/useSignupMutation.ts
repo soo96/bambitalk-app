@@ -1,10 +1,10 @@
 import { postSignup } from '@/apis/auth';
-import { RootStackParamList } from '@/app/RootStack';
 import { showErrorToast, showSuccessToast } from '@/utils/toastUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMutation } from '@tanstack/react-query';
 import { unlink } from '@react-native-seoul/kakao-login';
+import { RootStackParamList } from '@/types/navigation';
 
 type SignupScreenProp = NativeStackNavigationProp<RootStackParamList, 'Signup'>;
 
@@ -19,7 +19,7 @@ const useSignupMutation = (navigation: SignupScreenProp) => {
 
       showSuccessToast('회원가입 성공', 'BambiTalk에 오신 걸 환영해요 👶');
       setTimeout(() => {
-        navigation.replace('ChildInfoMain');
+        navigation.replace('BottomTabNavigator');
       }, 1000);
     },
     onError: async () => {

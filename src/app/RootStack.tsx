@@ -1,16 +1,9 @@
 import LoginScreen from '@/screens/Login';
 import ChildInfoMainScreen from '@/screens/ChildInfoMain';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import MyChildProfileScreen from '@/screens/MyChildProfile';
 import SignupScreen from '@/screens/Signup';
 import BottomTabNavigator from '@/components/BottomTabNavigator';
-
-export type RootStackParamList = {
-  Login: undefined;
-  Signup: { kakaoId: string };
-  ChildInfoMain: undefined;
-  BottomTabNavigator: undefined;
-};
+import { RootStackParamList } from '@/types/navigation';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 

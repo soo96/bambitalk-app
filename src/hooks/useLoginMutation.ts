@@ -1,5 +1,5 @@
 import { postLogin } from '@/apis/auth';
-import { RootStackParamList } from '@/app/RootStack';
+import { RootStackParamList } from '@/types/navigation';
 import { showErrorToast, showSuccessToast } from '@/utils/toastUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -26,7 +26,7 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
 
       showSuccessToast('로그인 성공', 'BambiTalk에 오신 걸 환영해요 👶');
       setTimeout(() => {
-        navigation.replace('MyChildProfile');
+        navigation.replace('BottomTabNavigator');
       }, 1000);
     },
     onError: () => {
