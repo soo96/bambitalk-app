@@ -3,12 +3,13 @@ import ChildInfoMainScreen from '@/screens/ChildInfoMain';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import MyChildProfileScreen from '@/screens/MyChildProfile';
 import SignupScreen from '@/screens/Signup';
+import BottomTabNavigator from '@/components/BottomTabNavigator';
 
 export type RootStackParamList = {
   Login: undefined;
   Signup: { kakaoId: string };
   ChildInfoMain: undefined;
-  MyChildProfile: undefined;
+  BottomTabNavigator: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -32,8 +33,8 @@ const RootStack = () => {
         options={{ headerShown: false }}
       />
       <Stack.Screen
-        name="MyChildProfile"
-        component={MyChildProfileScreen}
+        name="BottomTabNavigator"
+        component={BottomTabNavigator}
         options={{ headerShown: false }}
       />
     </Stack.Navigator>
