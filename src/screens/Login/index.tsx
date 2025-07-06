@@ -1,10 +1,10 @@
 import { View, Text, Image, StyleSheet } from 'react-native';
-import { RootStackParamList } from '@/app/RootStack';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { KakaoOAuthToken, login } from '@react-native-seoul/kakao-login';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import KakaoLoginButton from './KakaoLoginButton';
 import useLoginMutation from '@/hooks/useLoginMutation';
+import { RootStackParamList } from '@/types/navigation';
 
 type LoginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -12,7 +12,7 @@ interface LoginScreenProps {
   navigation: LoginScreenProp;
 }
 
-export default function LoginScreen({ navigation }: LoginScreenProps) {
+const LoginScreen = ({ navigation }: LoginScreenProps) => {
   const { mutateLogin, isPending } = useLoginMutation(navigation);
 
   const handleKakaoLogin = async () => {
@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
       <LoadingOverlay visible={isPending} />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -52,3 +52,5 @@ const styles = StyleSheet.create({
     marginBottom: 40,
   },
 });
+
+export default LoginScreen;

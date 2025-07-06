@@ -1,4 +1,3 @@
-import { RootStackParamList } from '@/app/RootStack';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import InputField from '@/components/ui/InputFeild';
 import PrimaryButton from '@/components/ui/PrimaryButton';
@@ -7,6 +6,7 @@ import { Option } from '@/components/ui/SelectableButtonGroup';
 import COLORS from '@/constants/colors';
 import useSignupMutation from '@/hooks/useSignupMutation';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import { RootStackParamList } from '@/types/navigation';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useState } from 'react';

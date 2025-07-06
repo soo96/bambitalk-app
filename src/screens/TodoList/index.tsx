@@ -1,9 +1,9 @@
 import { StyleSheet, Text, View } from 'react-native';
 
-const MyChildProfileScreen = () => {
+const TodoListScreen = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.text}>아이정보 입력</Text>
+      <Text style={styles.text}>투두 리스트</Text>
     </View>
   );
 };
@@ -19,4 +19,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MyChildProfileScreen;
+export default TodoListScreen;
