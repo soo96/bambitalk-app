@@ -1,4 +1,6 @@
 import COLORS from '@/constants/colors';
+import { useSocketStore } from '@/stores/useSocketStore';
+import { useState } from 'react';
 import {
   View,
   TextInput,
@@ -7,7 +9,26 @@ import {
   Text,
 } from 'react-native';
 
-const ChatInput = () => {
+interface ChatInputProps {
+  coupleId: number;
+  userId: number;
+}
+
+const ChatInput = ({ coupleId, userId }: ChatInputProps) => {
+  const socket = useSocketStore((state) => state.socket);
+  const [text, setText] = useState('');
+
+  const handlePress = () => {
+    if (!text.trim() || !socket) return;
+    socket.emit('send_message', {
+      coupleId,
+      senderId: userId,
+      content: text,
+    });
+
+    setText('');
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.plusButton}>
@@ -15,10 +36,12 @@ const ChatInput = () => {
       </TouchableOpacity>
       <TextInput
         style={styles.input}
+        value={text}
         placeholder="내용을 입력해주세요"
         placeholderTextColor={COLORS.GRAY_DARK}
+        onChangeText={setText}
       />
-      <TouchableOpacity style={styles.sendButton}>
+      <TouchableOpacity style={styles.sendButton} onPress={handlePress}>
         <Text style={styles.arrow}>↑</Text>
       </TouchableOpacity>
     </View>

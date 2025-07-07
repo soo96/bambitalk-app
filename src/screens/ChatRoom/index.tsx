@@ -6,6 +6,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList } from '@/types/navigation';
 import COLORS from '@/constants/colors';
+import { CHAT_INPUT_HEIGHT } from '@/constants/styles';
+import { useState } from 'react';
+import { useChatSocket } from '@/hooks/useChatSocket';
+import { ReceiveMessageDto } from '@/types/chat';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 type ChatRoomScreenNavigationProp = BottomTabNavigationProp<
   BottomTabParamList,
@@ -18,7 +24,24 @@ interface ChatRoomScreenProps {
 
 const ChatRoom = ({ navigation }: ChatRoomScreenProps) => {
   const insets = useSafeAreaInsets();
-  const offset = insets.top + 56;
+  const offset = insets.top + CHAT_INPUT_HEIGHT;
+  const coupleId = 16;
+  const userId = 16;
+
+  const [messages, setMessages] = useState<any[]>([]);
+
+  useChatSocket({
+    coupleId,
+    userId,
+    onMessageReceived: (msg: ReceiveMessageDto) => {
+      const message = {
+        ...msg,
+        time: format(msg.time, 'a h:mm', { locale: ko }),
+        isMe: userId === msg.senderId,
+      };
+      setMessages((prev) => [...prev, message]);
+    },
+  });
 
   return (
     <DefaultLayout headerTitle="🩷 여보 🩷">
@@ -28,8 +51,8 @@ const ChatRoom = ({ navigation }: ChatRoomScreenProps) => {
         keyboardVerticalOffset={offset}
       >
         <View style={styles.container}>
-          <MessageList />
-          <ChatInput />
+          <MessageList messages={messages} />
+          <ChatInput coupleId={coupleId} userId={userId} />
         </View>
       </KeyboardAvoidingView>
     </DefaultLayout>

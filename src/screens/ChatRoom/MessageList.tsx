@@ -1,22 +1,15 @@
-import { FlatList, View } from 'react-native';
+import { FlatList } from 'react-native';
 import MessageBubble from './MessageBubble';
+import { Message } from '@/types/chat';
 
-const dummyMessages = [
-  { id: '1', text: '오늘 몇시에 와?', isMe: false, time: '오후 4:21' },
-  { id: '2', text: '7시쯤?', isMe: true, time: '오후 4:28' },
-  { id: '3', text: 'ㅇㅋ', isMe: false, time: '오후 4:35' },
-  {
-    id: '4',
-    text: '그래?? 오늘 바로 퇴근하는거 아니야?',
-    isMe: false,
-    time: '오후 4:35',
-  },
-];
+interface MessageListProps {
+  messages: Message[];
+}
 
-const MessageList = () => {
+const MessageList = ({ messages }: MessageListProps) => {
   return (
     <FlatList
-      data={dummyMessages}
+      data={messages}
       keyExtractor={(item) => item.id}
       renderItem={({ item }) => (
         <MessageBubble text={item.text} isMe={item.isMe} time={item.time} />
