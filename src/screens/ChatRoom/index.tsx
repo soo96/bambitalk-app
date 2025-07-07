@@ -4,7 +4,7 @@ import ChatInput from './ChatInput';
 import DefaultLayout from '@/layouts/DefaultLayout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
-import { BottomTabParamList } from '@/types/navigation';
+import { BottomTabParamList, RootStackParamList } from '@/types/navigation';
 import COLORS from '@/constants/colors';
 import { CHAT_INPUT_HEIGHT } from '@/constants/styles';
 import { useCallback, useState } from 'react';
@@ -14,25 +14,32 @@ import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useAuthStore } from '@/stores/useAuthStore';
 import LoadingOverlay from '@/components/LoadingOverlay';
+import {
+  CompositeNavigationProp,
+  useNavigation,
+} from '@react-navigation/native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
-type ChatRoomScreenNavigationProp = BottomTabNavigationProp<
-  BottomTabParamList,
-  'ChatRoom'
+type ChatRoomScreenNavigationProp = CompositeNavigationProp<
+  BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
+  NativeStackNavigationProp<RootStackParamList>
 >;
 
-interface ChatRoomScreenProps {
-  navigation: ChatRoomScreenNavigationProp;
-}
-
-const ChatRoom = ({ navigation }: ChatRoomScreenProps) => {
+const ChatRoom = () => {
   const insets = useSafeAreaInsets();
   const offset = insets.top + CHAT_INPUT_HEIGHT;
 
   const [messages, setMessages] = useState<any[]>([]);
-  const user = useAuthStore((state) => state.user);
+  const navigation = useNavigation<ChatRoomScreenNavigationProp>();
+  const { user, hydrated } = useAuthStore();
 
-  if (user === null) {
+  if (!hydrated) {
     return <LoadingOverlay visible={true} />;
+  }
+
+  if (!user) {
+    navigation.replace('Login');
+    return;
   }
 
   const onMessageReceived = useCallback((msg: ReceiveMessageDto) => {
@@ -47,7 +54,7 @@ const ChatRoom = ({ navigation }: ChatRoomScreenProps) => {
   useChatSocket({ onMessageReceived });
 
   return (
-    <DefaultLayout headerTitle="🩷 여보 🩷">
+    <DefaultLayout headerTitle="BambiTalk">
       <KeyboardAvoidingView
         style={styles.container}
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}

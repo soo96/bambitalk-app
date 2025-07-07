@@ -9,6 +9,7 @@ interface AuthState {
     spouseId: number;
     nickname: string;
   } | null;
+  hydrated: boolean;
   accessToken: string | null;
   refreshToken: string | null;
 
@@ -19,22 +20,28 @@ interface AuthState {
   }) => void;
 
   clearAuth: () => void;
+  setHydrated: ({ hydrated }: { hydrated: boolean }) => void;
 }
 
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({
       user: null,
+      hydrated: false,
       accessToken: null,
       refreshToken: null,
       setAuth: ({ user, accessToken, refreshToken }) =>
         set({ user, accessToken, refreshToken }),
       clearAuth: () =>
         set({ user: null, accessToken: null, refreshToken: null }),
+      setHydrated: ({ hydrated }) => set({ hydrated }),
     }),
     {
       name: 'auth-storage',
       storage: createJSONStorage(() => AsyncStorage),
+      onRehydrateStorage: () => (state) => {
+        state?.setHydrated({ hydrated: true });
+      },
     },
   ),
 );
