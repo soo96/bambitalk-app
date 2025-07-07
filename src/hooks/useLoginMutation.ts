@@ -1,4 +1,5 @@
 import { postLogin } from '@/apis/auth';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { RootStackParamList } from '@/types/navigation';
 import { showErrorToast, showSuccessToast } from '@/utils/toastUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,7 +12,8 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
   const loginMutation = useMutation({
     mutationFn: postLogin,
     onSuccess: async (data) => {
-      const { needSignup, kakaoId, accessToken, refreshToken } = data.data;
+      const { needSignup, kakaoId, accessToken, refreshToken, user } =
+        data.data;
 
       if (needSignup) {
         showSuccessToast('BambiTalk에 오신 걸 환영해요 👶');
@@ -21,6 +23,8 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
         return;
       }
 
+      useAuthStore.getState().setAuth({ user, accessToken, refreshToken });
+
       await AsyncStorage.setItem('accessToken', accessToken);
       await AsyncStorage.setItem('refreshToken', refreshToken);
 
@@ -29,7 +33,7 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
         navigation.replace('BottomTabNavigator');
       }, 1000);
     },
-    onError: () => {
+    onError: (error) => {
       showErrorToast('🚨 로그인에 실패했어요.');
     },
   });
