@@ -1,13 +1,37 @@
-import COLORS from '@/constants/colors';
+import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
+import MessageList from './MessageList';
+import ChatInput from './ChatInput';
 import DefaultLayout from '@/layouts/DefaultLayout';
-import { StyleSheet, Text, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { BottomTabParamList } from '@/types/navigation';
+import COLORS from '@/constants/colors';
 
-const ChatRoomScreen = () => {
+type ChatRoomScreenNavigationProp = BottomTabNavigationProp<
+  BottomTabParamList,
+  'ChatRoom'
+>;
+
+interface ChatRoomScreenProps {
+  navigation: ChatRoomScreenNavigationProp;
+}
+
+const ChatRoom = ({ navigation }: ChatRoomScreenProps) => {
+  const insets = useSafeAreaInsets();
+  const offset = insets.top + 56;
+
   return (
-    <DefaultLayout headerTitle="후후">
-      <View style={styles.container}>
-        <Text style={styles.text}>채팅방</Text>
-      </View>
+    <DefaultLayout headerTitle="🩷 여보 🩷">
+      <KeyboardAvoidingView
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        keyboardVerticalOffset={offset}
+      >
+        <View style={styles.container}>
+          <MessageList />
+          <ChatInput />
+        </View>
+      </KeyboardAvoidingView>
     </DefaultLayout>
   );
 };
@@ -15,13 +39,8 @@ const ChatRoomScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
     backgroundColor: COLORS.WHITE,
-  },
-  text: {
-    fontSize: 20,
   },
 });
 
-export default ChatRoomScreen;
+export default ChatRoom;
