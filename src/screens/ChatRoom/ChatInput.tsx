@@ -9,20 +9,13 @@ import {
   Text,
 } from 'react-native';
 
-interface ChatInputProps {
-  coupleId: number;
-  userId: number;
-}
-
-const ChatInput = ({ coupleId, userId }: ChatInputProps) => {
+const ChatInput = () => {
   const socket = useSocketStore((state) => state.socket);
   const [text, setText] = useState('');
 
   const handlePress = () => {
     if (!text.trim() || !socket) return;
     socket.emit('send_message', {
-      coupleId,
-      senderId: userId,
       content: text,
     });
 
