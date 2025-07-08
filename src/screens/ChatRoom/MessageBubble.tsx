@@ -24,12 +24,15 @@ const styles = StyleSheet.create({
   container: {
     marginVertical: 4,
     maxWidth: '70%',
+    alignItems: 'flex-end',
   },
   left: {
     alignSelf: 'flex-start',
+    flexDirection: 'row',
   },
   right: {
     alignSelf: 'flex-end',
+    flexDirection: 'row-reverse',
   },
   bubble: {
     padding: 10,
@@ -44,7 +47,7 @@ const styles = StyleSheet.create({
   time: {
     fontSize: 12,
     color: COLORS.BLACK_LIGHT,
-    marginTop: 2,
+    marginHorizontal: 5,
   },
 });
 

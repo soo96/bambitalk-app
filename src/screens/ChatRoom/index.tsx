@@ -19,7 +19,11 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
 import { useChatStore } from '@/stores/useChatStore';
-import { formatMessage, formatMessageList } from '@/utils/messageUtil';
+import {
+  formatMessage,
+  formatMessageList,
+  groupMessagesWithDateSeparators,
+} from '@/utils/messageUtil';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
