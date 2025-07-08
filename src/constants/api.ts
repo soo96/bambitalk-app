@@ -6,6 +6,7 @@ export const API_PATH = {
   LOGOUT: API_PREFIX + '/auth/logout',
   REFRESH: API_PREFIX + 'auth/tokens/refresh',
   CHATS: API_PREFIX + '/chats',
+  MESSAGES: API_PREFIX + '/messages',
   SCHEDULES: API_PREFIX + '/schedules',
   CHILDREN: API_PREFIX + '/children',
   NOTIFICATIONS: API_PREFIX + '/notifications',
