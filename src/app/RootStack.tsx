@@ -4,6 +4,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SignupScreen from '@/screens/Signup';
 import BottomTabNavigator from '@/components/BottomTabNavigator';
 import { RootStackParamList } from '@/types/navigation';
+import DefaultLayout from '@/layouts/DefaultLayout';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -25,11 +26,13 @@ const RootStack = () => {
         component={ChildInfoMainScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen
-        name="BottomTabNavigator"
-        component={BottomTabNavigator}
-        options={{ headerShown: false }}
-      />
+      <Stack.Screen name="BottomTabNavigator" options={{ headerShown: false }}>
+        {({ navigation, route }) => (
+          <DefaultLayout>
+            <BottomTabNavigator />
+          </DefaultLayout>
+        )}
+      </Stack.Screen>
     </Stack.Navigator>
   );
 };
