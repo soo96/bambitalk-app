@@ -4,9 +4,10 @@ import { Message } from '@/types/chat';
 
 interface MessageListProps {
   messages: Message[];
+  onEndReached: () => void;
 }
 
-const MessageList = ({ messages }: MessageListProps) => {
+const MessageList = ({ messages, onEndReached }: MessageListProps) => {
   return (
     <FlatList
       data={messages}
@@ -15,6 +16,8 @@ const MessageList = ({ messages }: MessageListProps) => {
         <MessageBubble text={item.text} isMe={item.isMe} time={item.time} />
       )}
       contentContainerStyle={{ padding: 16 }}
+      inverted={true}
+      onEndReached={onEndReached}
     />
   );
 };
