@@ -1,5 +1,5 @@
 import { postLogin } from '@/apis/auth';
-import { useAuthStore } from '@/stores/useAuthStore';
+import { AuthPayload, useAuthStore } from '@/stores/useAuthStore';
 import { RootStackParamList } from '@/types/navigation';
 import { showErrorToast, showSuccessToast } from '@/utils/toastUtil';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,7 +8,10 @@ import { useMutation } from '@tanstack/react-query';
 
 type LoginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
-const useLoginMutation = (navigation: LoginScreenProp) => {
+const useLoginMutation = (
+  navigation: LoginScreenProp,
+  setAuth: (payload: AuthPayload) => void,
+) => {
   const loginMutation = useMutation({
     mutationFn: postLogin,
     onSuccess: async (data) => {
@@ -23,7 +26,7 @@ const useLoginMutation = (navigation: LoginScreenProp) => {
         return;
       }
 
-      useAuthStore.getState().setAuth({ user, accessToken, refreshToken });
+      setAuth({ user, accessToken, refreshToken });
 
       await AsyncStorage.setItem('accessToken', accessToken);
       await AsyncStorage.setItem('refreshToken', refreshToken);

@@ -5,6 +5,7 @@ import LoadingOverlay from '@/components/LoadingOverlay';
 import KakaoLoginButton from './KakaoLoginButton';
 import useLoginMutation from '@/hooks/useLoginMutation';
 import { RootStackParamList } from '@/types/navigation';
+import { useAuthStore } from '@/stores/useAuthStore';
 
 type LoginScreenProp = NativeStackNavigationProp<RootStackParamList, 'Login'>;
 
@@ -13,7 +14,9 @@ interface LoginScreenProps {
 }
 
 const LoginScreen = ({ navigation }: LoginScreenProps) => {
-  const { mutateLogin, isPending } = useLoginMutation(navigation);
+  const { setAuth } = useAuthStore();
+
+  const { mutateLogin, isPending } = useLoginMutation(navigation, setAuth);
 
   const handleKakaoLogin = async () => {
     const kakaoToken: KakaoOAuthToken = await login();

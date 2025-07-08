@@ -23,6 +23,12 @@ interface AuthState {
   setHydrated: ({ hydrated }: { hydrated: boolean }) => void;
 }
 
+export interface AuthPayload {
+  user: AuthState['user'];
+  accessToken: string;
+  refreshToken: string;
+}
+
 export const useAuthStore = create<AuthState>()(
   persist(
     (set) => ({

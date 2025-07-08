@@ -2,7 +2,7 @@ import { SOCKET_NAMESPACE } from '@/constants/chat';
 import { useAuthStore } from '@/stores/useAuthStore';
 import { useSocketStore } from '@/stores/useSocketStore';
 import { showErrorToast } from '@/utils/toastUtil';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import Config from 'react-native-config';
 import { io, Socket } from 'socket.io-client';
 
