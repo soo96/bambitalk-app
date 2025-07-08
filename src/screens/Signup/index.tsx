@@ -6,6 +6,7 @@ import { Option } from '@/components/ui/SelectableButtonGroup';
 import COLORS from '@/constants/colors';
 import useSignupMutation from '@/hooks/useSignupMutation';
 import DefaultLayout from '@/layouts/DefaultLayout';
+import { useAuthStore } from '@/stores/useAuthStore';
 import { RootStackParamList } from '@/types/navigation';
 import { RouteProp, useRoute } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -34,8 +35,9 @@ const SignupScreen = ({ navigation, route }: SignupScreenProps) => {
   const [touched, setTouched] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const { kakaoId } = route.params;
+  const { setAuth } = useAuthStore();
 
-  const { mutateSignup, isPending } = useSignupMutation(navigation);
+  const { mutateSignup, isPending } = useSignupMutation(navigation, setAuth);
 
   const genderOptions: Option[] = [
     { label: '아빠에요🙋🏻‍♂️', value: 'DAD' },

@@ -9,6 +9,9 @@ const COLORS = {
   NAVY_LIGHT: '#A0AEC0',
   WHITE: '#FFFFFF',
   BLACK: '#000000',
+  BLACK_LIGHT: '#333',
+  CHAT_PRIMARY: '#f4a58a',
+  CHAT_SECONDARY: '#f8c5a1',
 };
 
 export default COLORS;
