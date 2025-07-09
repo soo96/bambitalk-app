@@ -53,7 +53,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     borderTopColor: COLORS.GRAY_LIGHT,
     backgroundColor: COLORS.WHITE,
-    height: 75,
+    height: 55,
   },
   tabItem: {
     flex: 1,
