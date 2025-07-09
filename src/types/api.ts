@@ -1,8 +1,10 @@
-type loginDto = {
+import { ScheduleItem } from './schedule';
+
+export type LoginDto = {
   accessToken: string;
 };
 
-type signupDto = {
+export type SignupDto = {
   kakaoId: string;
   nickname: string;
   role: string;
