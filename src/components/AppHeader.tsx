@@ -1,3 +1,4 @@
+import COLORS from '@/constants/colors';
 import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 type AppHeaderProps = {
@@ -41,12 +42,14 @@ const styles = StyleSheet.create({
     height: 50,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF',
+    backgroundColor: COLORS.WHITE,
     justifyContent: 'space-between',
     paddingHorizontal: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.GRAY_LIGHT,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: 'bold',
   },
   side: {

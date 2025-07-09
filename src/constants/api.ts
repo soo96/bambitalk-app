@@ -12,3 +12,5 @@ export const API_PATH = {
   NOTIFICATIONS: API_PREFIX + '/notifications',
   USERS: API_PREFIX + 'users/me',
 };
+
+export const STALE_TIME = 1000 * 10; // 1분

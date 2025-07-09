@@ -1,7 +1,8 @@
 import { API_PATH } from '@/constants/api';
 import axiosClient from './axiosClient';
+import { LoginDto, SignupDto } from '@/types/api';
 
-export const postLogin = async ({ accessToken }: loginDto) => {
+export const postLogin = async ({ accessToken }: LoginDto) => {
   const result = await axiosClient.post(API_PATH.LOGIN, {
     accessToken,
   });
@@ -9,7 +10,7 @@ export const postLogin = async ({ accessToken }: loginDto) => {
   return result.data;
 };
 
-export const postSignup = async ({ kakaoId, nickname, role }: signupDto) => {
+export const postSignup = async ({ kakaoId, nickname, role }: SignupDto) => {
   const result = await axiosClient.post(API_PATH.SIGNUP, {
     kakaoId,
     nickname,

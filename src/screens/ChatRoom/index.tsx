@@ -1,7 +1,6 @@
 import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import MessageList from './MessageList';
 import ChatInput from './ChatInput';
-import DefaultLayout from '@/layouts/DefaultLayout';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList, RootStackParamList } from '@/types/navigation';
@@ -19,11 +18,7 @@ import {
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
 import { useChatStore } from '@/stores/useChatStore';
-import {
-  formatMessage,
-  formatMessageList,
-  groupMessagesWithDateSeparators,
-} from '@/utils/messageUtil';
+import { formatMessage, formatMessageList } from '@/utils/messageUtil';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
@@ -68,19 +63,17 @@ const ChatRoom = () => {
   };
 
   return (
-    <DefaultLayout headerTitle="BambiTalk">
-      <KeyboardAvoidingView
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        keyboardVerticalOffset={offset}
-      >
-        <View style={styles.container}>
-          <MessageList messages={allMessages} onEndReached={handleEndReached} />
-          <ChatInput />
-        </View>
-      </KeyboardAvoidingView>
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      keyboardVerticalOffset={offset}
+    >
+      <View style={styles.container}>
+        <MessageList messages={allMessages} onEndReached={handleEndReached} />
+        <ChatInput />
+      </View>
       <LoadingOverlay visible={isLoading} />
-    </DefaultLayout>
+    </KeyboardAvoidingView>
   );
 };
 

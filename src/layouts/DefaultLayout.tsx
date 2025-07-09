@@ -5,7 +5,7 @@ import { SafeAreaView, StyleSheet, View } from 'react-native';
 
 type Props = {
   children: ReactNode;
-  headerTitle: string;
+  headerTitle?: string;
   onLeftPress?: () => void;
   leftIcon?: ReactNode;
   onRightPress?: () => void;
@@ -14,7 +14,7 @@ type Props = {
 
 const DefaultLayout = ({
   children,
-  headerTitle,
+  headerTitle = 'BambiTalk',
   onLeftPress,
   leftIcon,
   onRightPress,
