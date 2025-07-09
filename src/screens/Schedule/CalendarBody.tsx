@@ -7,6 +7,7 @@ import {
   endOfWeek,
 } from 'date-fns';
 import DayCell from './DayCell';
+import COLORS from '@/constants/colors';
 
 interface CalendarBodyProps {
   currentMonth: Date;
@@ -32,6 +33,7 @@ const CalendarBody = ({
         const isSelected = selectedDate?.toDateString() === day.toDateString();
         const isToday = new Date().toDateString() === day.toDateString();
         const isThisMonth = day.getMonth() === currentMonth.getMonth();
+        const hasTasks = false;
 
         return (
           <DayCell
@@ -40,6 +42,7 @@ const CalendarBody = ({
             isSelected={isSelected}
             isToday={isToday}
             isThisMonth={isThisMonth}
+            hasTasks={hasTasks}
             onPress={() => onSelectDate(day)}
           />
         );
@@ -52,7 +55,9 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'flex-start',
+    justifyContent: 'center',
+    borderTopWidth: 1,
+    borderTopColor: COLORS.GRAY_LIGHT,
   },
 });
 

@@ -9,14 +9,17 @@ const BottomTabNavigator = (appStateType: any) => {
   const Tab = createBottomTabNavigator<BottomTabParamList>();
 
   return (
-    <Tab.Navigator tabBar={(props) => <BottomTabBar {...props} />}>
+    <Tab.Navigator
+      initialRouteName="Schedule"
+      tabBar={(props) => <BottomTabBar {...props} />}
+    >
       <Tab.Screen
         name="MyChildProfile"
         component={MyChildProfileScreen}
         options={{ headerShown: false }}
       />
       <Tab.Screen
-        name="TodoList"
+        name="Schedule"
         component={ScheduleScreen}
         options={{ headerShown: false }}
       />

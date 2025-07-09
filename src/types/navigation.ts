@@ -7,6 +7,6 @@ export type RootStackParamList = {
 
 export type BottomTabParamList = {
   MyChildProfile: undefined;
-  TodoList: undefined;
+  Schedule: undefined;
   ChatRoom: undefined;
 };

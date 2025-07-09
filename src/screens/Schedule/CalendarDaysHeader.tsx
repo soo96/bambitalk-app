@@ -1,3 +1,4 @@
+import COLORS from '@/constants/colors';
 import { View, Text, StyleSheet } from 'react-native';
 
 const days = ['월', '화', '수', '목', '금', '토', '일'];
@@ -24,7 +25,12 @@ const styles = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 14,
-    color: '#444',
+    color: COLORS.BLACK_LIGHT,
+    fontWeight: 'semibold',
+    backgroundColor: COLORS.SECONDARY,
+    borderRadius: 50,
+    marginHorizontal: 8,
+    paddingVertical: 10,
   },
 });
 
