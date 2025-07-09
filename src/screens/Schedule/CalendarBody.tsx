@@ -5,20 +5,24 @@ import {
   endOfMonth,
   startOfWeek,
   endOfWeek,
+  format,
 } from 'date-fns';
 import DayCell from './DayCell';
 import COLORS from '@/constants/colors';
+import { ScheduleItem } from '@/types/schedule';
 
 interface CalendarBodyProps {
   currentMonth: Date;
   selectedDate: Date | null;
   onSelectDate: (date: Date) => void;
+  schedulesByDateMap: Record<string, ScheduleItem[]>;
 }
 
 const CalendarBody = ({
   currentMonth,
   selectedDate,
   onSelectDate,
+  schedulesByDateMap,
 }: CalendarBodyProps) => {
   const monthStart = startOfMonth(currentMonth);
   const monthEnd = endOfMonth(monthStart);
@@ -26,6 +30,7 @@ const CalendarBody = ({
   const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
 
   const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
+  // console.log({ schedulesByDateMap });
 
   return (
     <View style={styles.grid}>
@@ -33,7 +38,12 @@ const CalendarBody = ({
         const isSelected = selectedDate?.toDateString() === day.toDateString();
         const isToday = new Date().toDateString() === day.toDateString();
         const isThisMonth = day.getMonth() === currentMonth.getMonth();
-        const hasTasks = false;
+
+        const dateKey = format(day, 'yyyy-MM-dd');
+        const schedules = schedulesByDateMap[dateKey] ?? [];
+        const hasTasks = schedules.length > 0;
+        const hasDadSchedule = schedules.some((s) => s.creatorRole === 'DAD');
+        const hasMomSchedule = schedules.some((s) => s.creatorRole === 'MOM');
 
         return (
           <DayCell
@@ -43,6 +53,8 @@ const CalendarBody = ({
             isToday={isToday}
             isThisMonth={isThisMonth}
             hasTasks={hasTasks}
+            hasDadSchedule={hasDadSchedule}
+            hasMomSchedule={hasMomSchedule}
             onPress={() => onSelectDate(day)}
           />
         );

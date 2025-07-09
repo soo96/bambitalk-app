@@ -11,6 +11,8 @@ import CalendarMonth from './CalendarMonth';
 import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList } from '@/types/navigation';
+import { useSchedulesByYearMonthQuery } from '@/hooks/useSchedulesQuery';
+import { ScheduleItem } from '@/types/schedule';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -28,6 +30,18 @@ const ScheduleScreen = () => {
       addMonths(currentMonth, 1),
     ];
   }, [currentMonth]);
+
+  const { data: schedules } = useSchedulesByYearMonthQuery(currentMonth);
+
+  const schedulesByDateMap = useMemo(() => {
+    const map: Record<string, ScheduleItem[]> = {};
+
+    schedules?.forEach(({ date, schedules }) => {
+      map[date] = schedules;
+    });
+
+    return map;
+  }, [schedules]);
 
   const handleScrollEnd = (e: NativeSyntheticEvent<NativeScrollEvent>) => {
     const offsetX = e.nativeEvent.contentOffset.x;
@@ -75,6 +89,7 @@ const ScheduleScreen = () => {
           monthDate={item}
           selectedDate={selectedDate}
           onSelectDate={setSelectedDate}
+          schedulesByDateMap={schedulesByDateMap}
         />
       )}
       showsHorizontalScrollIndicator={false}

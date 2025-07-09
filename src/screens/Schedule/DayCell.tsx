@@ -1,4 +1,4 @@
-import { TouchableOpacity, Text, StyleSheet } from 'react-native';
+import { TouchableOpacity, Text, StyleSheet, View } from 'react-native';
 import COLORS from '@/constants/colors';
 
 interface DayCellProps {
@@ -7,6 +7,8 @@ interface DayCellProps {
   isToday: boolean;
   isThisMonth: boolean;
   hasTasks: boolean;
+  hasDadSchedule: boolean;
+  hasMomSchedule: boolean;
   onPress: () => void;
 }
 
@@ -16,13 +18,15 @@ const DayCell = ({
   isToday,
   isThisMonth,
   hasTasks,
+  hasDadSchedule,
+  hasMomSchedule,
   onPress,
 }: DayCellProps) => {
   const day = date.getDate();
   const weekDay = date.getDay();
 
   const cellStyle = [
-    styles.cell,
+    styles.dateBox,
     !isThisMonth && styles.outsideMonth,
     isSelected && styles.selected,
     isToday && styles.today,
@@ -34,9 +38,14 @@ const DayCell = ({
   if (isToday) textColor = COLORS.WHITE;
 
   return (
-    <TouchableOpacity style={cellStyle} onPress={onPress}>
-      <Text style={[styles.text, { color: textColor }]}>{day}</Text>
-      {hasTasks && <Text style={styles.taskDot}>✅</Text>}
+    <TouchableOpacity style={styles.cell} onPress={onPress}>
+      <View style={cellStyle}>
+        <Text style={[styles.dateText, { color: textColor }]}>{day}</Text>
+      </View>
+      <View style={styles.emojiContainer}>
+        {hasDadSchedule && <Text style={styles.emoji}>💙</Text>}
+        {hasMomSchedule && <Text style={styles.emoji}>🩷</Text>}
+      </View>
     </TouchableOpacity>
   );
 };
@@ -45,11 +54,20 @@ const styles = StyleSheet.create({
   cell: {
     width: '13%',
     aspectRatio: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    marginVertical: 20,
+    marginTop: 10,
+    marginBottom: 0,
     marginHorizontal: 2,
-    paddingVertical: 10,
+    paddingBottom: 10,
+    borderWidth: 1,
+    borderColor: COLORS.WHITE,
+    borderRadius: 10,
+  },
+  dateBox: {
+    width: '100%',
+    alignItems: 'center',
+    paddingVertical: 12,
     borderWidth: 1,
     borderColor: COLORS.WHITE,
     borderRadius: 10,
@@ -68,12 +86,17 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.PRIMARY,
     borderRadius: 10,
   },
-  text: {
+  dateText: {
     fontSize: 14,
   },
-  taskDot: {
-    fontSize: 10,
-    marginTop: 4,
+  emojiContainer: {
+    height: 20,
+    marginTop: 5,
+    flexDirection: 'row',
+    gap: 2,
+  },
+  emoji: {
+    fontSize: 14,
   },
 });
 
