@@ -12,6 +12,8 @@ const COLORS = {
   BLACK_LIGHT: '#333',
   CHAT_PRIMARY: '#f4a58a',
   CHAT_SECONDARY: '#f8c5a1',
+  RED: '#FF6B6B',
+  BLUE: '#4DABF7',
 };
 
 export default COLORS;

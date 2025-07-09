@@ -19,6 +19,7 @@ const DayCell = ({
   onPress,
 }: DayCellProps) => {
   const day = date.getDate();
+  const weekDay = date.getDay();
 
   const cellStyle = [
     styles.cell,
@@ -27,7 +28,10 @@ const DayCell = ({
     isToday && styles.today,
   ];
 
-  const textColor = isToday ? COLORS.WHITE : COLORS.BLACK;
+  let textColor = COLORS.BLACK;
+  if (weekDay === 0) textColor = COLORS.RED;
+  if (weekDay === 6) textColor = COLORS.BLUE;
+  if (isToday) textColor = COLORS.WHITE;
 
   return (
     <TouchableOpacity style={cellStyle} onPress={onPress}>
@@ -46,6 +50,8 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal: 2,
     paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: COLORS.WHITE,
     borderRadius: 10,
   },
   outsideMonth: {

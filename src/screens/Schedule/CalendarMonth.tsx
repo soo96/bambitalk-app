@@ -1,4 +1,4 @@
-import { View, Dimensions } from 'react-native';
+import { View, Dimensions, StyleSheet } from 'react-native';
 import MonthTitle from './MonthTitle';
 import CalendarBody from './CalendarBody';
 import CalendarDaysHeader from './CalendarDaysHeader';
@@ -17,7 +17,7 @@ const CalendarMonth = ({
   onSelectDate,
 }: CalendarMonthProps) => {
   return (
-    <View style={{ width: SCREEN_WIDTH, paddingHorizontal: 16 }}>
+    <View style={styles.container}>
       <MonthTitle date={monthDate} />
       <CalendarDaysHeader />
       <CalendarBody
@@ -28,5 +28,12 @@ const CalendarMonth = ({
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    width: SCREEN_WIDTH,
+    paddingHorizontal: 16,
+  },
+});
 
 export default CalendarMonth;
