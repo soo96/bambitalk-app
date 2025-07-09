@@ -1,5 +1,3 @@
-import { ScheduleItem } from './schedule';
-
 export type LoginDto = {
   accessToken: string;
 };
@@ -11,3 +9,5 @@ export type SignupDto = {
 };
 
 type Role = 'DAD' | 'MOM' | null;
+
+export type ApiResponse<T> = { code: number; message: string; data: T };
