@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import {
   FlatList,
   NativeSyntheticEvent,
@@ -8,6 +8,9 @@ import {
 import COLORS from '@/constants/colors';
 import { addMonths, subMonths } from 'date-fns';
 import CalendarMonth from './CalendarMonth';
+import { useNavigation } from '@react-navigation/native';
+import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
+import { BottomTabParamList } from '@/types/navigation';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -15,6 +18,8 @@ const ScheduleScreen = () => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const flatListRef = useRef<FlatList>(null);
+  const navigation =
+    useNavigation<BottomTabNavigationProp<BottomTabParamList>>();
 
   const monthList = useMemo(() => {
     return [
@@ -42,6 +47,10 @@ const ScheduleScreen = () => {
     setSelectedDate(new Date());
     flatListRef.current?.scrollToIndex({ index: 1, animated: false });
   };
+
+  useEffect(() => {
+    return navigation.addListener('tabPress', handlePressToday);
+  });
 
   return (
     <FlatList
