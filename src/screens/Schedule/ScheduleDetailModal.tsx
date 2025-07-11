@@ -1,13 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
-  Animated,
   View,
   Text,
-  TextInput,
   TouchableOpacity,
   StyleSheet,
   TouchableWithoutFeedback,
-  Dimensions,
   KeyboardAvoidingView,
   Platform,
 } from 'react-native';
@@ -22,8 +19,6 @@ import COLORS from '@/constants/colors';
 import ScheduleInput from './ScheduleInput';
 import { COLOR, Color } from '@/types/color';
 import ScheduleColorPicker from './ScheduleColorPicker';
-
-const SCREEN_HEIGHT = Dimensions.get('window').height;
 
 interface Props {
   date: Date | null;
@@ -40,8 +35,7 @@ const ScheduleDetailModal = ({ date, schedule, onSave, onClose }: Props) => {
   const [color, setColor] = useState<Color>(COLOR.YELLOW);
   const [time, setTime] = useState('00:00');
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
-  const [isDirty, setIsDirty] = useState(false);
-  const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
+  console.log({ time });
 
   const handleConfirmTime = (pickedDate: Date) => {
     const formatted = format(pickedDate, 'HH:mm');
@@ -49,13 +43,24 @@ const ScheduleDetailModal = ({ date, schedule, onSave, onClose }: Props) => {
     setTimePickerVisible(false);
   };
 
-  const handleCloseAndSave = () => {
+  const handlePressBackdrop = () => {
+    const [hour, minute] = time.split(':');
+    const saveDate = new Date(date);
+
+    saveDate.setHours(Number(hour));
+    saveDate.setMinutes(Number(minute));
+
     const data = {
       title,
       description: memo,
       color,
-      date: date.toISOString(),
+      date: saveDate.toISOString(),
     };
+
+    if (!title) {
+      onClose(true);
+      return;
+    }
 
     if (schedule) {
       onSave({
@@ -69,24 +74,16 @@ const ScheduleDetailModal = ({ date, schedule, onSave, onClose }: Props) => {
     onClose(true);
   };
 
-  const handlePressBackdrop = () => {
-    if (schedule || isDirty) {
-      handleCloseAndSave();
-    }
-
-    onClose(false);
-  };
-
   const handleSelectColor = (color: Color) => {
     setColor(color);
   };
 
   useEffect(() => {
     if (schedule) {
-      setTitle(schedule.title || '');
+      setTitle(schedule.title);
       setMemo(schedule.description || '');
       setColor(COLOR[schedule.color]);
-      setTime(schedule.time || '00:00');
+      setTime(schedule.time);
     } else {
       setTitle('');
       setMemo('');
@@ -94,19 +91,6 @@ const ScheduleDetailModal = ({ date, schedule, onSave, onClose }: Props) => {
       setTime('00:00');
     }
   }, []);
-
-  useEffect(() => {
-    if (
-      title !== '' ||
-      memo !== '' ||
-      time !== '00:00' ||
-      color !== COLOR.YELLOW
-    ) {
-      setIsDirty(true);
-    } else {
-      setIsDirty(false);
-    }
-  }, [title, memo, time, color]);
 
   return (
     <KeyboardAvoidingView
