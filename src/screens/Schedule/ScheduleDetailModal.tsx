@@ -15,6 +15,8 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import { ScheduleItem } from '@/types/schedule';
 import { format } from 'date-fns';
 import COLORS from '@/constants/colors';
+import ScheduleInput from './ScheduleInput';
+import { COLOR, Color } from '@/types/color';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -33,22 +35,22 @@ export default function ScheduleDetailModal({
 }: Props) {
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
-  const [color, setColor] = useState('#FF5733');
+  const [color, setColor] = useState<Color>(COLOR.YELLOW);
   const [time, setTime] = useState('00:00');
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
-  const pastelColors = Object.values(COLORS.SCHEDULE);
+  const pastelColors = Object.values(COLOR);
 
   useEffect(() => {
     if (schedule) {
       setTitle(schedule.title || '');
       setMemo(schedule.description || '');
-      setColor(schedule.color || pastelColors[0]);
+      setColor(COLOR[schedule.color] || COLOR.YELLOW);
       setTime(schedule.time || '00:00');
     } else {
       setTitle('');
       setMemo('');
-      setColor(pastelColors[0]);
+      setColor(COLOR.YELLOW);
       setTime('00:00');
     }
 
@@ -105,10 +107,10 @@ export default function ScheduleDetailModal({
                   key={c}
                   style={[
                     styles.colorCircle,
-                    { backgroundColor: c },
+                    { backgroundColor: COLORS.PASTEL[c] },
                     c === color && styles.selectedCircle,
                   ]}
-                  onPress={() => setColor(c)}
+                  onPress={() => setColor(COLOR[c])}
                 />
               ))}
             </View>
@@ -124,9 +126,8 @@ export default function ScheduleDetailModal({
             minuteInterval={30}
           />
 
-          <TextInput
+          <ScheduleInput
             placeholder="제목을 입력하세요"
-            placeholderTextColor={COLORS.GRAY_DARK}
             value={title}
             onChangeText={setTitle}
             style={styles.titleInput}
@@ -134,12 +135,11 @@ export default function ScheduleDetailModal({
             autoFocus
           />
 
-          <TextInput
+          <ScheduleInput
             placeholder="메모를 입력하세요"
-            placeholderTextColor={COLORS.GRAY_DARK}
             value={memo}
             onChangeText={setMemo}
-            style={[styles.descriptionInput]}
+            style={styles.descriptionInput}
             maxLength={28}
           />
         </View>
