@@ -30,7 +30,6 @@ const CalendarBody = ({
   const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
 
   const days = eachDayOfInterval({ start: calendarStart, end: calendarEnd });
-  // console.log({ schedulesByDateMap });
 
   return (
     <View style={styles.grid}>

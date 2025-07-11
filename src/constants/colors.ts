@@ -14,6 +14,14 @@ const COLORS = {
   CHAT_SECONDARY: '#f8c5a1',
   RED: '#FF6B6B',
   BLUE: '#4DABF7',
+  SCHEDULE: {
+    PASTEL_RED: '#F8B5B5',
+    PASTEL_ORANGE: '#FBD6A4',
+    PASTEL_YELLOW: '#FFF5A5',
+    PASTEL_GREEN: '#CFF5C1',
+    PASTEL_BLUE: '#B7E3F5',
+    PASTEL_PURPLE: '#E4D4F0',
+  },
 };
 
 export default COLORS;

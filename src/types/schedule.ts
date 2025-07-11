@@ -4,6 +4,7 @@ export interface ScheduleItem {
   description?: string | null;
   date: string;
   time: string;
+  color: string;
   isCompleted: boolean;
   creatorId: number;
   creatorRole: 'DAD' | 'MOM' | null;
