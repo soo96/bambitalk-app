@@ -6,7 +6,11 @@ import {
   FlatList,
   TouchableWithoutFeedback,
 } from 'react-native';
-import { ScheduleItem } from '@/types/schedule';
+import {
+  DeleteScheduleParams,
+  ScheduleItem,
+  UpdateScheduleDto,
+} from '@/types/schedule';
 import ScheduleListItem from './ScheduleListItem';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
@@ -18,7 +22,8 @@ interface Props {
   schedules: ScheduleItem[];
   onClose: () => void;
   onPressAdd: () => void;
-  onPressItem?: (item: ScheduleItem) => void;
+  onToggleCheckBox: (data: UpdateScheduleDto) => void;
+  onPressItem: (item: ScheduleItem) => void;
 }
 
 const ScheduleListModal = ({
@@ -27,6 +32,7 @@ const ScheduleListModal = ({
   schedules,
   onClose,
   onPressAdd,
+  onToggleCheckBox,
   onPressItem,
 }: Props) => {
   if (!visible || !date) return null;
@@ -47,15 +53,9 @@ const ScheduleListModal = ({
           keyExtractor={(item) => item.scheduleId.toString()}
           renderItem={({ item }) => (
             <ScheduleListItem
-              time={item.time}
-              title={item.title}
-              description={item.description}
-              color={item.color}
-              isCompleted={item.isCompleted}
-              onToggle={() => {
-                // TODO: 완료 상태 토글
-              }}
-              onPress={() => onPressItem?.(item)}
+              schedule={item}
+              onToggle={onToggleCheckBox}
+              onPressItem={() => onPressItem(item)}
             />
           )}
           style={{ height: 300 }}

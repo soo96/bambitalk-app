@@ -116,6 +116,10 @@ const ScheduleScreen = () => {
     }
   };
 
+  const handleToggleCheckBox = async (data: UpdateScheduleDto) => {
+    await updateScheduleMutation.mutateAsync(data);
+  };
+
   const handleDeleteSchedule = async ({ scheduleId }: DeleteScheduleParams) => {
     const yearMonth = format(selectedDate!, 'yyyy-MM');
 
@@ -163,6 +167,7 @@ const ScheduleScreen = () => {
           schedules={todaysSchedules}
           onClose={handleCloseScheduleListModal}
           onPressAdd={handleOpenDetailModalForNew}
+          onToggleCheckBox={handleToggleCheckBox}
           onPressItem={handleOpenDetailModalForEdit}
         />
       )}

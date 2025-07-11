@@ -1,29 +1,23 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import COLORS from '@/constants/colors';
-import { Color } from '@/types/color';
+import {
+  DeleteScheduleParams,
+  ScheduleItem,
+  UpdateScheduleDto,
+} from '@/types/schedule';
 
 interface Props {
-  time: string;
-  title: string;
-  description?: string | null;
-  color: Color;
-  isCompleted: boolean;
-  onToggle: () => void;
-  onPress?: () => void;
+  schedule: ScheduleItem;
+  onToggle: (data: UpdateScheduleDto) => void;
+  onPressItem: () => void;
 }
 
-const ScheduleListItem = ({
-  time,
-  title,
-  description,
-  color,
-  isCompleted,
-  onToggle,
-  onPress,
-}: Props) => {
+const ScheduleListItem = ({ schedule, onToggle, onPressItem }: Props) => {
+  const { scheduleId, title, description, time, color, isCompleted } = schedule;
+
   return (
     <TouchableOpacity
-      onPress={onPress}
+      onPress={onPressItem}
       activeOpacity={0.8}
       style={[
         styles.container,
@@ -48,7 +42,10 @@ const ScheduleListItem = ({
         ) : null}
       </View>
 
-      <TouchableOpacity onPress={onToggle} style={styles.checkboxContainer}>
+      <TouchableOpacity
+        onPress={() => onToggle({ scheduleId, isCompleted: !isCompleted })}
+        style={styles.checkboxContainer}
+      >
         <View
           style={[styles.checkbox, isCompleted && styles.checkboxChecked]}
         />
