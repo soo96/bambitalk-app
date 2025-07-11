@@ -28,12 +28,7 @@ interface Props {
   onSave: (data: Partial<ScheduleItem>) => void;
 }
 
-export default function ScheduleDetailModal({
-  date,
-  schedule,
-  onClose,
-  onSave,
-}: Props) {
+const ScheduleDetailModal = ({ date, schedule, onClose, onSave }: Props) => {
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
   const [color, setColor] = useState<Color>(COLOR.YELLOW);
@@ -142,7 +137,7 @@ export default function ScheduleDetailModal({
       </View>
     </KeyboardAvoidingView>
   );
-}
+};
 
 const styles = StyleSheet.create({
   keyboardAvoiding: {
@@ -196,3 +191,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
+
+export default ScheduleDetailModal;
