@@ -10,51 +10,56 @@ interface Props {
   schedule: ScheduleItem;
   onToggle: (data: UpdateScheduleDto) => void;
   onPressItem: () => void;
+  onPressDelete: (params: DeleteScheduleParams) => void;
 }
 
 const ScheduleListItem = ({ schedule, onToggle, onPressItem }: Props) => {
   const { scheduleId, title, description, time, color, isCompleted } = schedule;
 
   return (
-    <TouchableOpacity
-      onPress={onPressItem}
-      activeOpacity={0.8}
-      style={[
-        styles.container,
-        { backgroundColor: COLORS.PASTEL[color] },
-        isCompleted && styles.completedContainer,
-      ]}
-    >
-      <View style={styles.timeContainer}>
-        <Text style={styles.time}>{time}</Text>
-      </View>
+    <View style={styles.backdrop}>
+      <TouchableOpacity
+        onPress={onPressItem}
+        activeOpacity={0.8}
+        style={[
+          styles.container,
+          { backgroundColor: COLORS.PASTEL[color] },
+          isCompleted && styles.completedContainer,
+        ]}
+      >
+        <View style={styles.timeContainer}>
+          <Text style={styles.time}>{time}</Text>
+        </View>
 
-      <View style={styles.contentContainer}>
-        <Text style={[styles.title, isCompleted && styles.completedText]}>
-          {title}
-        </Text>
-        {description ? (
+        <View style={styles.contentContainer}>
+          <Text style={[styles.title, isCompleted && styles.completedText]}>
+            {title}
+          </Text>
           <Text
             style={[styles.description, isCompleted && styles.completedText]}
           >
             {description}
           </Text>
-        ) : null}
-      </View>
+        </View>
 
-      <TouchableOpacity
-        onPress={() => onToggle({ scheduleId, isCompleted: !isCompleted })}
-        style={styles.checkboxContainer}
-      >
-        <View
-          style={[styles.checkbox, isCompleted && styles.checkboxChecked]}
-        />
+        <TouchableOpacity
+          onPress={() => onToggle({ scheduleId, isCompleted: !isCompleted })}
+          style={styles.checkboxContainer}
+        >
+          <View
+            style={[styles.checkbox, isCompleted && styles.checkboxChecked]}
+          />
+        </TouchableOpacity>
       </TouchableOpacity>
-    </TouchableOpacity>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
+  backdrop: {
+    flex: 1,
+    backgroundColor: COLORS.WHITE,
+  },
   container: {
     flexDirection: 'row',
     alignItems: 'center',

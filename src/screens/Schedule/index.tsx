@@ -169,6 +169,7 @@ const ScheduleScreen = () => {
           onPressAdd={handleOpenDetailModalForNew}
           onToggleCheckBox={handleToggleCheckBox}
           onPressItem={handleOpenDetailModalForEdit}
+          onPressDelete={handleDeleteSchedule}
         />
       )}
 

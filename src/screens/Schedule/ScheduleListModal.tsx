@@ -3,7 +3,6 @@ import {
   Text,
   StyleSheet,
   TouchableOpacity,
-  FlatList,
   TouchableWithoutFeedback,
 } from 'react-native';
 import {
@@ -15,6 +14,8 @@ import ScheduleListItem from './ScheduleListItem';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import COLORS from '@/constants/colors';
+import { SwipeListView } from 'react-native-swipe-list-view';
+import { Trash2 } from 'lucide-react-native';
 
 interface Props {
   visible: boolean;
@@ -24,6 +25,7 @@ interface Props {
   onPressAdd: () => void;
   onToggleCheckBox: (data: UpdateScheduleDto) => void;
   onPressItem: (item: ScheduleItem) => void;
+  onPressDelete: (params: DeleteScheduleParams) => void;
 }
 
 const ScheduleListModal = ({
@@ -34,6 +36,7 @@ const ScheduleListModal = ({
   onPressAdd,
   onToggleCheckBox,
   onPressItem,
+  onPressDelete,
 }: Props) => {
   if (!visible || !date) return null;
 
@@ -48,7 +51,7 @@ const ScheduleListModal = ({
       <View style={styles.modalContent}>
         <Text style={styles.dateTitle}>{title}</Text>
 
-        <FlatList
+        <SwipeListView
           data={schedules}
           keyExtractor={(item) => item.scheduleId.toString()}
           renderItem={({ item }) => (
@@ -56,8 +59,20 @@ const ScheduleListModal = ({
               schedule={item}
               onToggle={onToggleCheckBox}
               onPressItem={() => onPressItem(item)}
+              onPressDelete={onPressDelete}
             />
           )}
+          renderHiddenItem={({ item }: { item: ScheduleItem }) => (
+            <View style={styles.rowBack}>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => onPressDelete({ scheduleId: item.scheduleId })}
+              >
+                <Trash2 color={COLORS.WHITE} />
+              </TouchableOpacity>
+            </View>
+          )}
+          rightOpenValue={-75}
           style={{ height: 300 }}
           showsVerticalScrollIndicator={false}
         />
@@ -102,6 +117,25 @@ const styles = StyleSheet.create({
   addText: {
     fontSize: 16,
     color: COLORS.BLACK_LIGHT,
+  },
+  rowBack: {
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    paddingLeft: 20,
+    marginBottom: 10,
+  },
+  deleteButton: {
+    width: 60,
+    height: '100%',
+    borderRadius: 12,
+    backgroundColor: COLORS.RED,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  deleteButtonText: {
+    color: COLORS.WHITE,
+    fontWeight: 'bold',
   },
 });
 
