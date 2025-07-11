@@ -5,6 +5,8 @@ import {
   ScheduleItem,
   UpdateScheduleDto,
 } from '@/types/schedule';
+import { Square, SquareCheck } from 'lucide-react-native';
+import ReactNativeHapticFeedback from 'react-native-haptic-feedback';
 
 interface Props {
   schedule: ScheduleItem;
@@ -15,6 +17,15 @@ interface Props {
 
 const ScheduleListItem = ({ schedule, onToggle, onPressItem }: Props) => {
   const { scheduleId, title, description, time, color, isCompleted } = schedule;
+
+  const handleToggle = () => {
+    ReactNativeHapticFeedback.trigger('impactHeavy', {
+      enableVibrateFallback: true,
+      ignoreAndroidSystemSettings: false,
+    });
+
+    onToggle({ scheduleId, isCompleted: !isCompleted });
+  };
 
   return (
     <View style={styles.backdrop}>
@@ -43,12 +54,14 @@ const ScheduleListItem = ({ schedule, onToggle, onPressItem }: Props) => {
         </View>
 
         <TouchableOpacity
-          onPress={() => onToggle({ scheduleId, isCompleted: !isCompleted })}
+          onPress={handleToggle}
           style={styles.checkboxContainer}
         >
-          <View
-            style={[styles.checkbox, isCompleted && styles.checkboxChecked]}
-          />
+          {isCompleted ? (
+            <SquareCheck size={25} color={COLORS.BLACK_LIGHT} />
+          ) : (
+            <Square size={25} color={COLORS.BLACK_LIGHT} />
+          )}
         </TouchableOpacity>
       </TouchableOpacity>
     </View>
@@ -68,7 +81,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   completedContainer: {
-    opacity: 0.4,
+    opacity: 0.6,
   },
   timeContainer: {
     width: 50,
@@ -96,20 +109,10 @@ const styles = StyleSheet.create({
     textDecorationLine: 'line-through',
   },
   checkboxContainer: {
-    width: 24,
-    height: 24,
-    borderWidth: 1,
-    borderColor: COLORS.BLACK,
-    borderRadius: 12,
+    width: 30,
+    height: 30,
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  checkbox: {
-    width: 12,
-    height: 12,
-  },
-  checkboxChecked: {
-    backgroundColor: COLORS.BLACK_LIGHT,
   },
 });
 
