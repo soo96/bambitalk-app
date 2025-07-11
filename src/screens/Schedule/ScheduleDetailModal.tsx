@@ -17,6 +17,7 @@ import { format } from 'date-fns';
 import COLORS from '@/constants/colors';
 import ScheduleInput from './ScheduleInput';
 import { COLOR, Color } from '@/types/color';
+import ScheduleColorPicker from './ScheduleColorPicker';
 
 const SCREEN_HEIGHT = Dimensions.get('window').height;
 
@@ -81,6 +82,10 @@ export default function ScheduleDetailModal({
     onClose(true);
   };
 
+  const handleSelectColor = (color: Color) => {
+    setColor(color);
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -101,19 +106,10 @@ export default function ScheduleDetailModal({
               <Text style={styles.timePickerText}>🕒 {time}</Text>
             </TouchableOpacity>
 
-            <View style={styles.colorRow}>
-              {pastelColors.map((c) => (
-                <TouchableOpacity
-                  key={c}
-                  style={[
-                    styles.colorCircle,
-                    { backgroundColor: COLORS.PASTEL[c] },
-                    c === color && styles.selectedCircle,
-                  ]}
-                  onPress={() => setColor(COLOR[c])}
-                />
-              ))}
-            </View>
+            <ScheduleColorPicker
+              onSelect={handleSelectColor}
+              selectedColor={color}
+            />
           </View>
 
           <DateTimePickerModal
@@ -182,19 +178,6 @@ const styles = StyleSheet.create({
   timePickerText: {
     fontSize: 16,
     color: COLORS.BLACK,
-  },
-  colorRow: {
-    flexDirection: 'row',
-  },
-  colorCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
-    marginLeft: 8,
-  },
-  selectedCircle: {
-    borderWidth: 2,
-    borderColor: COLORS.BLACK_LIGHT,
   },
   titleInput: {
     borderWidth: 1,
