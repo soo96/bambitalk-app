@@ -12,7 +12,11 @@ import {
   Platform,
 } from 'react-native';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { ScheduleItem } from '@/types/schedule';
+import {
+  CreateScheduleDto,
+  ScheduleItem,
+  UpdateScheduleDto,
+} from '@/types/schedule';
 import { format } from 'date-fns';
 import COLORS from '@/constants/colors';
 import ScheduleInput from './ScheduleInput';
@@ -25,39 +29,19 @@ interface Props {
   date: Date | null;
   schedule: ScheduleItem | null;
   onClose: (saved?: boolean) => void;
-  onSave: (data: Partial<ScheduleItem>) => void;
+  onSave: (data: CreateScheduleDto | UpdateScheduleDto) => void;
 }
 
-const ScheduleDetailModal = ({ date, schedule, onClose, onSave }: Props) => {
+const ScheduleDetailModal = ({ date, schedule, onSave, onClose }: Props) => {
+  if (!date) return null;
+
   const [title, setTitle] = useState('');
   const [memo, setMemo] = useState('');
   const [color, setColor] = useState<Color>(COLOR.YELLOW);
   const [time, setTime] = useState('00:00');
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
+  const [isDirty, setIsDirty] = useState(false);
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
-  const pastelColors = Object.values(COLOR);
-
-  useEffect(() => {
-    if (schedule) {
-      setTitle(schedule.title || '');
-      setMemo(schedule.description || '');
-      setColor(COLOR[schedule.color] || COLOR.YELLOW);
-      setTime(schedule.time || '00:00');
-    } else {
-      setTitle('');
-      setMemo('');
-      setColor(COLOR.YELLOW);
-      setTime('00:00');
-    }
-
-    Animated.timing(slideAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
-  if (!date) return null;
 
   const handleConfirmTime = (pickedDate: Date) => {
     const formatted = format(pickedDate, 'HH:mm');
@@ -66,20 +50,63 @@ const ScheduleDetailModal = ({ date, schedule, onClose, onSave }: Props) => {
   };
 
   const handleCloseAndSave = () => {
-    onSave({
-      scheduleId: schedule?.scheduleId,
+    const data = {
       title,
       description: memo,
       color,
-      date: format(date, 'yyyy-MM-dd'),
-      time,
-    });
+      date: date.toISOString(),
+    };
+
+    if (schedule) {
+      onSave({
+        ...data,
+        scheduleId: schedule.scheduleId,
+      });
+    } else {
+      onSave(data);
+    }
+
     onClose(true);
+  };
+
+  const handlePressBackdrop = () => {
+    if (schedule || isDirty) {
+      handleCloseAndSave();
+    }
+
+    onClose(false);
   };
 
   const handleSelectColor = (color: Color) => {
     setColor(color);
   };
+
+  useEffect(() => {
+    if (schedule) {
+      setTitle(schedule.title || '');
+      setMemo(schedule.description || '');
+      setColor(COLOR[schedule.color]);
+      setTime(schedule.time || '00:00');
+    } else {
+      setTitle('');
+      setMemo('');
+      setColor(COLOR.YELLOW);
+      setTime('00:00');
+    }
+  }, []);
+
+  useEffect(() => {
+    if (
+      title !== '' ||
+      memo !== '' ||
+      time !== '00:00' ||
+      color !== COLOR.YELLOW
+    ) {
+      setIsDirty(true);
+    } else {
+      setIsDirty(false);
+    }
+  }, [title, memo, time, color]);
 
   return (
     <KeyboardAvoidingView
@@ -88,7 +115,7 @@ const ScheduleDetailModal = ({ date, schedule, onClose, onSave }: Props) => {
       style={styles.keyboardAvoiding}
     >
       <View style={styles.overlay}>
-        <TouchableWithoutFeedback onPress={handleCloseAndSave}>
+        <TouchableWithoutFeedback onPress={handlePressBackdrop}>
           <View style={styles.backdrop} />
         </TouchableWithoutFeedback>
 

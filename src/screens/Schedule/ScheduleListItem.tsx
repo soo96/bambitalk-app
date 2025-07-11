@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import COLORS from '@/constants/colors';
+import { Color } from '@/types/color';
 
 interface Props {
   time: string;
   title: string;
   description?: string | null;
+  color: Color;
   isCompleted: boolean;
   onToggle: () => void;
   onPress?: () => void;
@@ -14,6 +16,7 @@ const ScheduleListItem = ({
   time,
   title,
   description,
+  color,
   isCompleted,
   onToggle,
   onPress,
@@ -22,7 +25,11 @@ const ScheduleListItem = ({
     <TouchableOpacity
       onPress={onPress}
       activeOpacity={0.8}
-      style={[styles.container, isCompleted && styles.completedContainer]}
+      style={[
+        styles.container,
+        { backgroundColor: COLORS.PASTEL[color] },
+        isCompleted && styles.completedContainer,
+      ]}
     >
       <View style={styles.timeContainer}>
         <Text style={styles.time}>{time}</Text>
@@ -54,7 +61,6 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: COLORS.PASTEL.YELLOW,
     borderRadius: 12,
     padding: 12,
     marginBottom: 8,

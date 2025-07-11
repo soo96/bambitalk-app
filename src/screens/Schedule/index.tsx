@@ -12,9 +12,17 @@ import { useNavigation } from '@react-navigation/native';
 import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList } from '@/types/navigation';
 import { useSchedulesByYearMonthQuery } from '@/hooks/useSchedulesQuery';
-import { ScheduleItem } from '@/types/schedule';
+import {
+  CreateScheduleDto,
+  DeleteScheduleParams,
+  ScheduleItem,
+  UpdateScheduleDto,
+} from '@/types/schedule';
 import ScheduleListModal from './ScheduleListModal';
 import ScheduleDetailModal from './ScheduleDetailModal';
+import { useCreateScheduleMutation } from '@/hooks/useCreateScheduleMutation';
+import { useUpdateScheduleMutation } from '@/hooks/useUpdateScheduleMutation';
+import { useDeleteScheduleMutation } from '@/hooks/useDeleteScheduleMutation';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 
@@ -39,6 +47,9 @@ const ScheduleScreen = () => {
   }, [currentMonth]);
 
   const { data: schedules } = useSchedulesByYearMonthQuery(currentMonth);
+  const createScheduleMutation = useCreateScheduleMutation();
+  const updateScheduleMutation = useUpdateScheduleMutation();
+  const deleteScheduleMutation = useDeleteScheduleMutation();
 
   const schedulesByDateMap = useMemo(() => {
     const map: Record<string, ScheduleItem[]> = {};
@@ -95,15 +106,20 @@ const ScheduleScreen = () => {
     setIsDetailModalVisible(false);
   };
 
-  const handleSaveSchedule = (data: Partial<ScheduleItem>) => {
-    if (data.scheduleId) {
+  const handleSaveSchedule = async (
+    data: CreateScheduleDto | UpdateScheduleDto,
+  ) => {
+    if (selectedSchedule) {
+      await updateScheduleMutation.mutateAsync(data as UpdateScheduleDto);
     } else {
+      await createScheduleMutation.mutateAsync(data as CreateScheduleDto);
     }
-    setIsDetailModalVisible(false);
   };
 
-  const handleDeleteSchedule = (scheduleId: number) => {
-    setIsDetailModalVisible(false);
+  const handleDeleteSchedule = async ({ scheduleId }: DeleteScheduleParams) => {
+    const yearMonth = format(selectedDate!, 'yyyy-MM');
+
+    await deleteScheduleMutation.mutateAsync({ scheduleId, yearMonth });
   };
 
   useEffect(() => {

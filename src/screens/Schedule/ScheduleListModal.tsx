@@ -50,6 +50,7 @@ const ScheduleListModal = ({
               time={item.time}
               title={item.title}
               description={item.description}
+              color={item.color}
               isCompleted={item.isCompleted}
               onToggle={() => {
                 // TODO: 완료 상태 토글
@@ -57,7 +58,8 @@ const ScheduleListModal = ({
               onPress={() => onPressItem?.(item)}
             />
           )}
-          style={{ maxHeight: 300 }}
+          style={{ height: 300 }}
+          showsVerticalScrollIndicator={false}
         />
 
         <TouchableOpacity style={styles.addBtn} onPress={onPressAdd}>
