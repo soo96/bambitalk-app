@@ -4,7 +4,7 @@ interface LoadingOverlayProps {
   visible: boolean;
 }
 
-export default function LoadingOverlay({ visible }: LoadingOverlayProps) {
+const LoadingOverlay = ({ visible }: LoadingOverlayProps) => {
   if (!visible) return null;
 
   return (
@@ -12,7 +12,7 @@ export default function LoadingOverlay({ visible }: LoadingOverlayProps) {
       <ActivityIndicator size="large" color="#283C63" />
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   overlay: {
@@ -23,3 +23,5 @@ const styles = StyleSheet.create({
     zIndex: 999,
   },
 });
+
+export default LoadingOverlay;

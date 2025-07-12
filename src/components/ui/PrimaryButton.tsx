@@ -13,12 +13,7 @@ interface Props {
   width?: DimensionValue;
 }
 
-export default function PrimaryButton({
-  label,
-  onPress,
-  disabled,
-  width = '70%',
-}: Props) {
+const PrimaryButton = ({ label, onPress, disabled, width = '70%' }: Props) => {
   return (
     <TouchableOpacity
       style={[styles.button, { width }, disabled && styles.disabled]}
@@ -28,7 +23,7 @@ export default function PrimaryButton({
       <Text style={styles.label}>{label}</Text>
     </TouchableOpacity>
   );
-}
+};
 
 const styles = StyleSheet.create({
   button: {
@@ -47,3 +42,5 @@ const styles = StyleSheet.create({
     opacity: 0.5,
   },
 });
+
+export default PrimaryButton;

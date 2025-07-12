@@ -12,11 +12,7 @@ interface Props {
   onSelect: (value: string) => void;
 }
 
-export default function SelectableButtonGroup({
-  options,
-  selected,
-  onSelect,
-}: Props) {
+const SelectableButtonGroup = ({ options, selected, onSelect }: Props) => {
   return (
     <View style={styles.container}>
       {options.map(({ label, value }) => (
@@ -30,7 +26,7 @@ export default function SelectableButtonGroup({
       ))}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -54,3 +50,5 @@ const styles = StyleSheet.create({
     color: COLORS.TEXT_PRIMARY,
   },
 });
+
+export default SelectableButtonGroup;

@@ -1,5 +1,5 @@
 import COLORS from '@/constants/colors';
-import { TextInput, StyleSheet, DimensionValue } from 'react-native';
+import { TextInput, StyleSheet } from 'react-native';
 
 interface Props {
   placeholder?: string;
@@ -8,12 +8,7 @@ interface Props {
   status?: 'default' | 'error' | 'success';
 }
 
-export default function InputField({
-  placeholder,
-  value,
-  onChangeText,
-  status,
-}: Props) {
+const InputField = ({ placeholder, value, onChangeText, status }: Props) => {
   return (
     <TextInput
       style={[
@@ -27,7 +22,7 @@ export default function InputField({
       onChangeText={onChangeText}
     />
   );
-}
+};
 
 const styles = StyleSheet.create({
   input: {
@@ -44,3 +39,5 @@ const styles = StyleSheet.create({
     borderColor: COLORS.SUCCESS,
   },
 });
+
+export default InputField;
