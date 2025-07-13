@@ -17,8 +17,8 @@ import {
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
-import { useChatStore } from '@/stores/useChatStore';
 import { formatMessage, formatMessageList } from '@/utils/messageUtil';
+import { useRealTimeMessage } from '@/hooks/useRealTimeMessage';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
@@ -28,7 +28,12 @@ type ChatRoomScreenNavigationProp = CompositeNavigationProp<
 const ChatRoom = () => {
   const navigation = useNavigation<ChatRoomScreenNavigationProp>();
   const { user, hydrated } = useAuthStore();
-  const { realtimeMessages, addRealtimeMessage } = useChatStore();
+  const {
+    realtimeMessages,
+    addRealtimeMessage,
+    markMessagesAsRead,
+    clearRealtimeMessages,
+  } = useRealTimeMessage();
   const insets = useSafeAreaInsets();
   const offset = insets.top + CHAT_INPUT_HEIGHT;
 
@@ -41,13 +46,15 @@ const ChatRoom = () => {
     return;
   }
 
-  const onMessageReceived = useCallback((msg: ReceiveMessageDto) => {
-    const message = formatMessage(msg, user.userId);
+  const handleMessageReceived = useCallback(
+    (msg: ReceiveMessageDto) => {
+      const message = formatMessage(msg, user.userId);
+      addRealtimeMessage(message);
+    },
+    [addRealtimeMessage, user.userId],
+  );
 
-    addRealtimeMessage(message);
-  }, []);
-
-  useChatSocket({ onMessageReceived });
+  useChatSocket({ handleMessageReceived });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useMessagesInfiniteQuery();
