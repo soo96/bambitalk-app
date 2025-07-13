@@ -13,6 +13,7 @@ import { useAuthStore } from '@/stores/useAuthStore';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import {
   CompositeNavigationProp,
+  useFocusEffect,
   useNavigation,
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -54,10 +55,23 @@ const ChatRoom = () => {
     [addRealtimeMessage, user.userId],
   );
 
-  const { sendMessage } = useChatSocket({ handleMessageReceived });
+  const handleUpdateReadStatus = useCallback(() => {
+    markMessagesAsRead();
+  }, [markMessagesAsRead]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useMessagesInfiniteQuery();
+  const { connect, disconnect, sendMessage, readAllMessages } = useChatSocket({
+    handleMessageReceived,
+    handleUpdateReadStatus,
+  });
+
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+    refetch: refetchMessages,
+  } = useMessagesInfiniteQuery();
 
   const flatQueryPages = data?.pages.flatMap((page) => page) ?? [];
   const fetchedLastPages = formatMessageList(flatQueryPages, user.userId);
@@ -68,6 +82,21 @@ const ChatRoom = () => {
       fetchNextPage();
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      clearRealtimeMessages;
+      console.log('focus');
+      connect();
+      refetchMessages();
+      readAllMessages();
+
+      return () => {
+        console.log('unfocus');
+        disconnect();
+      };
+    }, []),
+  );
 
   return (
     <KeyboardAvoidingView

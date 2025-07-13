@@ -6,8 +6,10 @@ import { io, Socket } from 'socket.io-client';
 
 export const useChatSocket = ({
   handleMessageReceived,
+  handleUpdateReadStatus,
 }: {
   handleMessageReceived: (message: any) => void;
+  handleUpdateReadStatus: () => void;
 }) => {
   const user = useAuthStore((state) => state.user);
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -39,6 +41,12 @@ export const useChatSocket = ({
       socketRef.current.emit('read_all_messages');
     });
 
+    socketInstance.on('update_read_status', (senderId: number) => {
+      if (user?.userId === senderId) return;
+
+      handleUpdateReadStatus();
+    });
+
     socketInstance.on('disconnect', () => {
       console.log('❌ Socket disconnected');
     });
@@ -56,7 +64,18 @@ export const useChatSocket = ({
     return () => {
       socketInstance.disconnect();
     };
-  }, [handleMessageReceived]);
+  }, [handleMessageReceived, handleUpdateReadStatus]);
+
+  const connect = useCallback(() => {
+    if (!socketRef.current) return;
+    if (socketRef.current.connected) return;
+    socketRef.current.connect();
+  }, []);
+
+  const disconnect = useCallback(() => {
+    if (!socketRef.current) return;
+    socketRef.current.disconnect();
+  }, []);
 
   const sendMessage = (content: string) => {
     if (!socketRef.current || !socketRef.current.connected) return;
@@ -64,7 +83,17 @@ export const useChatSocket = ({
     socketRef.current.emit('send_message', { content });
   };
 
+  const readAllMessages = () => {
+    if (!socketRef.current) return;
+
+    socketRef.current.emit('read_all_messages');
+  };
+
   return {
     sendMessage,
+    readAllMessages,
+    disconnect,
+    connect,
+    isConnected: socketRef.current?.connected,
   };
 };
