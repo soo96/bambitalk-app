@@ -54,7 +54,7 @@ const ChatRoom = () => {
     [addRealtimeMessage, user.userId],
   );
 
-  useChatSocket({ handleMessageReceived });
+  const { sendMessage } = useChatSocket({ handleMessageReceived });
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
     useMessagesInfiniteQuery();
@@ -77,7 +77,7 @@ const ChatRoom = () => {
     >
       <View style={styles.container}>
         <MessageList messages={allMessages} onEndReached={handleEndReached} />
-        <ChatInput />
+        <ChatInput onPressSend={sendMessage} />
       </View>
       <LoadingOverlay visible={isLoading} />
     </KeyboardAvoidingView>

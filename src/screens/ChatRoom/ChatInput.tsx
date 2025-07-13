@@ -1,5 +1,4 @@
 import COLORS from '@/constants/colors';
-import { useSocketStore } from '@/stores/useSocketStore';
 import { useState } from 'react';
 import {
   View,
@@ -9,16 +8,17 @@ import {
   Text,
 } from 'react-native';
 
-const ChatInput = () => {
-  const socket = useSocketStore((state) => state.socket);
+interface ChatInputProps {
+  onPressSend: (content: string) => void;
+}
+
+const ChatInput = ({ onPressSend }: ChatInputProps) => {
   const [text, setText] = useState('');
 
   const handlePress = () => {
-    if (!text.trim() || !socket) return;
-    socket.emit('send_message', {
-      content: text,
-    });
+    if (!text.trim()) return;
 
+    onPressSend(text);
     setText('');
   };
 
