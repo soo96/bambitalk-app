@@ -1,23 +1,26 @@
 import { SOCKET_NAMESPACE } from '@/constants/chat';
 import { useAuthStore } from '@/stores/useAuthStore';
-import { useSocketStore } from '@/stores/useSocketStore';
-import { showErrorToast } from '@/utils/toastUtil';
-import { useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import Config from 'react-native-config';
 import { io, Socket } from 'socket.io-client';
 
 export const useChatSocket = ({
-  onMessageReceived,
+  handleMessageReceived,
+  handleUpdateReadStatus,
 }: {
-  onMessageReceived: (message: any) => void;
+  handleMessageReceived: (message: any) => void;
+  handleUpdateReadStatus: () => void;
 }) => {
-  const setSocket = useSocketStore((state) => state.setSocket);
   const user = useAuthStore((state) => state.user);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
-    const socket: Socket = io(Config.SOCKET_URL + SOCKET_NAMESPACE, {
+    if (socketRef.current) return;
+
+    const socketInstance: Socket = io(Config.SOCKET_URL + SOCKET_NAMESPACE, {
       transports: ['websocket'],
+      autoConnect: false,
       query: {
         coupleId: user?.coupleId,
       },
@@ -26,27 +29,71 @@ export const useChatSocket = ({
       },
     });
 
-    setSocket(socket);
-
-    socket.on('connect', () => {
-      console.log('✅ Socket connected!', socket.id);
+    socketInstance.on('connect', () => {
+      console.log('✅ Socket connected!', socketInstance.id);
     });
 
-    socket.on('receive_message', (message) => {
-      onMessageReceived(message);
+    socketInstance.on('receive_message', (message) => {
+      handleMessageReceived(message);
+
+      if (!socketRef.current) return;
+
+      socketRef.current.emit('read_all_messages');
     });
 
-    socket.on('disconnect', () => {
+    socketInstance.on('update_read_status', (senderId: number) => {
+      if (user?.userId === senderId) return;
+
+      handleUpdateReadStatus();
+    });
+
+    socketInstance.on('disconnect', () => {
       console.log('❌ Socket disconnected');
-      showErrorToast('채팅 연결이 끊겼습니다. 다시 시도 중이에요.');
     });
 
-    socket.on('connect_error', (err) => {
+    socketInstance.on('connect_error', (err) => {
       console.log('🚨 Socket error:', err);
     });
 
+    socketInstance.on('error', (message) => {
+      console.log(message);
+    });
+
+    socketRef.current = socketInstance;
+
     return () => {
-      socket.disconnect();
+      socketInstance.disconnect();
     };
-  }, [onMessageReceived]);
+  }, [handleMessageReceived, handleUpdateReadStatus]);
+
+  const connect = useCallback(() => {
+    if (!socketRef.current) return;
+    if (socketRef.current.connected) return;
+    socketRef.current.connect();
+  }, []);
+
+  const disconnect = useCallback(() => {
+    if (!socketRef.current) return;
+    socketRef.current.disconnect();
+  }, []);
+
+  const sendMessage = (content: string) => {
+    if (!socketRef.current || !socketRef.current.connected) return;
+
+    socketRef.current.emit('send_message', { content });
+  };
+
+  const readAllMessages = () => {
+    if (!socketRef.current) return;
+
+    socketRef.current.emit('read_all_messages');
+  };
+
+  return {
+    sendMessage,
+    readAllMessages,
+    disconnect,
+    connect,
+    isConnected: socketRef.current?.connected,
+  };
 };

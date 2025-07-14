@@ -5,9 +5,12 @@ interface Props {
   text: string;
   isMe: boolean;
   time: string;
+  isRead: boolean;
 }
 
-const MessageBubble = ({ text, isMe, time }: Props) => {
+const MessageBubble = ({ text, isMe, time, isRead }: Props) => {
+  const readCount = isRead ? '' : '1';
+
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
       <View
@@ -15,7 +18,10 @@ const MessageBubble = ({ text, isMe, time }: Props) => {
       >
         <Text>{text}</Text>
       </View>
-      <Text style={styles.time}>{time}</Text>
+      <View style={styles.timeBoxRight}>
+        {isMe && <Text style={styles.readCount}>{readCount}</Text>}
+        <Text style={styles.time}>{time}</Text>
+      </View>
     </View>
   );
 };
@@ -40,9 +46,20 @@ const styles = StyleSheet.create({
   },
   bubbleLeft: {
     backgroundColor: COLORS.CHAT_SECONDARY,
+    borderTopLeftRadius: 0,
   },
   bubbleRight: {
     backgroundColor: COLORS.CHAT_PRIMARY,
+    borderTopRightRadius: 0,
+  },
+  timeBoxRight: {
+    alignItems: 'flex-end',
+  },
+  readCount: {
+    fontSize: 12,
+    fontWeight: 'semibold',
+    paddingHorizontal: 5,
+    color: COLORS.CHAT_PRIMARY,
   },
   time: {
     fontSize: 12,
