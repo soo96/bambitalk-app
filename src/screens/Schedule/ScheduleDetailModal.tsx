@@ -35,7 +35,6 @@ const ScheduleDetailModal = ({ date, schedule, onSave, onClose }: Props) => {
   const [color, setColor] = useState<Color>(COLOR.YELLOW);
   const [time, setTime] = useState('00:00');
   const [isTimePickerVisible, setTimePickerVisible] = useState(false);
-  console.log({ time });
 
   const handleConfirmTime = (pickedDate: Date) => {
     const formatted = format(pickedDate, 'HH:mm');

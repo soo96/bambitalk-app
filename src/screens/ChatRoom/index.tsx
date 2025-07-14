@@ -8,7 +8,6 @@ import COLORS from '@/constants/colors';
 import { CHAT_INPUT_HEIGHT } from '@/constants/styles';
 import { useCallback, useState } from 'react';
 import { useChatSocket } from '@/hooks/useChatSocket';
-import { ReceiveMessageDto } from '@/types/chat';
 import { useAuthStore } from '@/stores/useAuthStore';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import {
@@ -21,6 +20,7 @@ import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
 import { formatMessage, formatMessageList } from '@/utils/messageUtil';
 import { useRealTimeMessage } from '@/hooks/useRealTimeMessage';
 import ChatActionBox from './ChatActionBox';
+import { ReceiveMessageDto } from '@/types/chat';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
@@ -61,7 +61,7 @@ const ChatRoom = () => {
     markMessagesAsRead();
   }, [markMessagesAsRead]);
 
-  const { connect, disconnect, sendMessage, readAllMessages } = useChatSocket({
+  const { connect, disconnect, sendMessage } = useChatSocket({
     handleMessageReceived,
     handleUpdateReadStatus,
   });

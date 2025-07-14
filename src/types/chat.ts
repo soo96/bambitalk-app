@@ -1,28 +1,31 @@
-export interface Message {
+export interface MessageItem {
   id: string;
-  text: string;
+  chatId: number;
   senderId: number;
-  isMe: boolean;
-  time: Date;
+  type: MessageType;
+  content: string;
   isRead: boolean;
+  sentAt: Date;
+  date: string;
+  time: string;
+  isMe: boolean;
 }
 
 export interface ReceiveMessageDto {
   id: number;
+  chatId: number;
   senderId: number;
-  text: string;
-  time: Date;
+  type: MessageType;
+  content: string;
   isRead: boolean;
+  sentAt: Date;
 }
 
-export type RenderItem =
-  | { type: 'date'; date: string }
-  | {
-      type: 'message';
-      id: string;
-      text: string;
-      senderId: number;
-      isMe: boolean;
-      time: string;
-      isRead: boolean;
-    };
+export interface SendMessagePayload {
+  type: MessageType;
+  content: string;
+}
+
+export type RenderItem = { type: 'DATE'; date: string } | MessageItem;
+
+export type MessageType = 'TEXT' | 'IMAGE' | 'VIDEO' | 'DATE';

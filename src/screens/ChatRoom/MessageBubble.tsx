@@ -1,21 +1,20 @@
 import COLORS from '@/constants/colors';
 import { View, Text, StyleSheet } from 'react-native';
 import { Bold, HeartIcon } from 'lucide-react-native';
+import { MessageItem } from '@/types/chat';
 
 interface Props {
-  text: string;
-  isMe: boolean;
-  time: string;
-  isRead: boolean;
+  message: MessageItem;
 }
 
-const MessageBubble = ({ text, isMe, time, isRead }: Props) => {
+const MessageBubble = ({ message }: Props) => {
+  const { content, isMe, isRead, time } = message;
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
       <View
         style={[styles.bubble, isMe ? styles.bubbleRight : styles.bubbleLeft]}
       >
-        <Text>{text}</Text>
+        <Text>{content}</Text>
       </View>
       <View style={styles.timeBoxRight}>
         {isMe && !isRead && (

@@ -1,5 +1,6 @@
 import { SOCKET_NAMESPACE } from '@/constants/chat';
 import { useAuthStore } from '@/stores/useAuthStore';
+import { SendMessagePayload } from '@/types/chat';
 import { useCallback, useEffect, useRef } from 'react';
 import Config from 'react-native-config';
 import { io, Socket } from 'socket.io-client';
@@ -77,10 +78,10 @@ export const useChatSocket = ({
     socketRef.current.disconnect();
   }, []);
 
-  const sendMessage = (content: string) => {
+  const sendMessage = (payload: SendMessagePayload) => {
     if (!socketRef.current || !socketRef.current.connected) return;
 
-    socketRef.current.emit('send_message', { content });
+    socketRef.current.emit('send_message', payload);
   };
 
   const readAllMessages = () => {

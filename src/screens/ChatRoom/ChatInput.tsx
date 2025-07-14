@@ -2,9 +2,10 @@ import COLORS from '@/constants/colors';
 import { useState } from 'react';
 import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
 import { XIcon, PlusIcon, ArrowUpIcon } from 'lucide-react-native';
+import { SendMessagePayload } from '@/types/chat';
 
 interface ChatInputProps {
-  onPressSend: (content: string) => void;
+  onPressSend: (payload: SendMessagePayload) => void;
   onPressPlus: () => void;
   onPressClose: () => void;
   showActions: boolean;
@@ -22,7 +23,10 @@ const ChatInput = ({
   const handlePress = () => {
     if (!hasText) return;
 
-    onPressSend(text);
+    onPressSend({
+      type: 'TEXT',
+      content: text,
+    });
     setText('');
   };
 
