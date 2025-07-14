@@ -1,5 +1,6 @@
 import COLORS from '@/constants/colors';
 import { View, Text, StyleSheet } from 'react-native';
+import { Bold, HeartIcon } from 'lucide-react-native';
 
 interface Props {
   text: string;
@@ -9,8 +10,6 @@ interface Props {
 }
 
 const MessageBubble = ({ text, isMe, time, isRead }: Props) => {
-  const readCount = isRead ? '' : '1';
-
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
       <View
@@ -19,7 +18,15 @@ const MessageBubble = ({ text, isMe, time, isRead }: Props) => {
         <Text>{text}</Text>
       </View>
       <View style={styles.timeBoxRight}>
-        {isMe && <Text style={styles.readCount}>{readCount}</Text>}
+        {isMe && !isRead && (
+          <Text style={styles.readCount}>
+            <HeartIcon
+              color={COLORS.CHAT_PRIMARY}
+              size={12}
+              fontWeight={'bold'}
+            />
+          </Text>
+        )}
         <Text style={styles.time}>{time}</Text>
       </View>
     </View>
@@ -56,10 +63,7 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
   },
   readCount: {
-    fontSize: 12,
-    fontWeight: 'semibold',
     paddingHorizontal: 5,
-    color: COLORS.CHAT_PRIMARY,
   },
   time: {
     fontSize: 12,
