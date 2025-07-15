@@ -1,14 +1,20 @@
 import COLORS from '@/constants/colors';
+import { SendMessagePayload } from '@/types/chat';
 import { CameraIcon, ImageIcon } from 'lucide-react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 interface ChatActionBoxProps {
   visible: boolean;
+  sendMessage: (payload: SendMessagePayload) => void;
   onClose: () => void;
 }
 
-const ChatActionBox = ({ visible, onClose }: ChatActionBoxProps) => {
+const ChatActionBox = ({
+  visible,
+  sendMessage,
+  onClose,
+}: ChatActionBoxProps) => {
   if (!visible) return null;
 
   const handleOpenGallery = () => {
@@ -23,8 +29,20 @@ const ChatActionBox = ({ visible, onClose }: ChatActionBoxProps) => {
         if (response.didCancel) {
           console.log('사용자가 선택 취소');
         } else if (response.assets && response.assets.length > 0) {
-          const selectedImages = response.assets[0];
-          console.log({ selectedImages });
+          const selectedImage = response.assets[0];
+
+          if (!selectedImage.base64) {
+            console.warn('이미지 base64가 없습니다!');
+            return;
+          }
+
+          const mimeType = selectedImage.type || 'image/jpeg';
+          const base64Data = `data:${mimeType};base64,${selectedImage.base64}`;
+
+          sendMessage({
+            type: 'IMAGE',
+            content: base64Data,
+          });
         }
       },
     );

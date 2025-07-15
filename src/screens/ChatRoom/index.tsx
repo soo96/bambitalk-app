@@ -114,6 +114,7 @@ const ChatRoom = () => {
       </View>
       <ChatActionBox
         visible={showActions}
+        sendMessage={sendMessage}
         onClose={() => setShowActions(false)}
       />
       <LoadingOverlay visible={isLoading} />
