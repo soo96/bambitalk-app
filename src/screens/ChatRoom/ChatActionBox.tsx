@@ -1,7 +1,14 @@
+import { postFile } from '@/apis/file';
 import COLORS from '@/constants/colors';
 import { SendMessagePayload } from '@/types/chat';
 import { CameraIcon, ImageIcon } from 'lucide-react-native';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
 
 interface ChatActionBoxProps {
@@ -25,26 +32,7 @@ const ChatActionBox = ({
         selectionLimit: 1,
         includeBase64: true,
       },
-      (response) => {
-        if (response.didCancel) {
-          console.log('사용자가 선택 취소');
-        } else if (response.assets && response.assets.length > 0) {
-          const selectedImage = response.assets[0];
-
-          if (!selectedImage.base64) {
-            console.warn('이미지 base64가 없습니다!');
-            return;
-          }
-
-          const mimeType = selectedImage.type || 'image/jpeg';
-          const base64Data = `data:${mimeType};base64,${selectedImage.base64}`;
-
-          sendMessage({
-            type: 'IMAGE',
-            content: base64Data,
-          });
-        }
-      },
+      handleUploadFile,
     );
   };
 
@@ -53,18 +41,35 @@ const ChatActionBox = ({
     launchCamera(
       {
         mediaType: 'photo',
-        presentationStyle: 'fullScreen',
-        includeBase64: true,
+        presentationStyle: 'popover',
       },
-      (response) => {
-        if (response.didCancel) {
-          console.log('사용자가 촬영 취소');
-        } else if (response.assets && response.assets.length > 0) {
-          const capturedImage = response.assets;
-          console.log({ capturedImage });
-        }
-      },
+      handleUploadFile,
     );
+  };
+
+  const handleUploadFile = async (response: any) => {
+    if (!response.assets || response.assets.length === 0) return;
+
+    const fileAsset = response.assets[0];
+    const formData = new FormData();
+    formData.append('file', {
+      uri:
+        Platform.OS === 'ios'
+          ? fileAsset.uri?.replace('file://', '')
+          : fileAsset.uri,
+      name: fileAsset.fileName ?? 'photo.jpg',
+      type: fileAsset.type ?? 'image/jpeg',
+    });
+
+    try {
+      const data = await postFile(formData);
+      sendMessage({
+        type: 'IMAGE',
+        content: data.fileUrl,
+      });
+    } catch (error) {
+      console.error('파일 업로드 실패:', error);
+    }
   };
 
   return (
