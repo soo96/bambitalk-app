@@ -10,6 +10,7 @@ import {
   View,
 } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 interface ChatActionBoxProps {
   visible: boolean;
@@ -51,20 +52,29 @@ const ChatActionBox = ({
     if (!response.assets || response.assets.length === 0) return;
 
     const fileAsset = response.assets[0];
+
+    const resizedImage = await ImageResizer.createResizedImage(
+      fileAsset.uri!,
+      1024,
+      1024,
+      'JPEG',
+      70,
+    );
+
     const formData = new FormData();
     formData.append('file', {
       uri:
         Platform.OS === 'ios'
-          ? fileAsset.uri?.replace('file://', '')
-          : fileAsset.uri,
-      name: fileAsset.fileName ?? 'photo.jpg',
+          ? resizedImage.uri?.replace('file://', '')
+          : resizedImage.uri,
+      name: resizedImage.name ?? 'photo.jpg',
       type: fileAsset.type ?? 'image/jpeg',
     });
 
     try {
       const data = await postFile(formData);
       sendMessage({
-        type: 'IMAGE',
+        type: fileAsset.type.startsWith('video/') ? 'VIDEO' : 'IMAGE',
         content: data.fileUrl,
       });
     } catch (error) {
