@@ -32,20 +32,19 @@ export const formatMessageList = (
 export const groupMessagesWithDateSeparators = (messages: MessageItem[]) => {
   const result: RenderItem[] = [];
 
-  let lastDate = '';
-
-  messages.forEach((msg: MessageItem) => {
-    const messageDate = format(msg.sentAt, 'yyyy.MM.dd', {
-      locale: ko,
-    });
-
-    if (messageDate !== lastDate && result.length > 0) {
-      result.push({ type: 'DATE', date: messageDate });
-    }
-
-    lastDate = messageDate;
+  messages.forEach((msg: MessageItem, index) => {
+    const messageDate = format(msg.sentAt, 'yyyy.MM.dd', { locale: ko });
 
     result.push(msg);
+
+    const nextMsg = messages[index + 1];
+    const nextDate = nextMsg
+      ? format(nextMsg.sentAt, 'yyyy.MM.dd', { locale: ko })
+      : '';
+
+    if (messageDate !== nextDate) {
+      result.push({ type: 'DATE', date: messageDate });
+    }
   });
 
   return result;
