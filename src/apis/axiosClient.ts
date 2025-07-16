@@ -7,7 +7,7 @@ const AUTH_EXCLUDE_PATHS = [API_PATH.LOGIN, API_PATH.SIGNUP, API_PATH.REFRESH];
 
 const axiosClient = axios.create({
   baseURL: Config.API_URL,
-  timeout: 5000,
+  timeout: 50000,
   headers: {
     'Content-Type': 'application/json',
   },

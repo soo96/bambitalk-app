@@ -5,6 +5,7 @@ import { groupMessagesWithDateSeparators } from '@/utils/messageUtil';
 import DateSeparator from './DateSeparator';
 import MessageImage from './MessageImage';
 import MessageVideo from './MessageVideo';
+import ProgressBubble from './ProgressBubble';
 
 interface MessageListProps {
   messages: MessageItem[];
@@ -25,17 +26,24 @@ const MessageList = ({
       keyExtractor={(item) =>
         item.type === 'DATE' ? `date-${item.date}` : `msg-${item.id}`
       }
-      renderItem={({ item }) =>
-        item.type === 'DATE' ? (
-          <DateSeparator date={item.date} />
-        ) : item.type === 'TEXT' ? (
-          <MessageBubble message={item} />
-        ) : item.type === 'IMAGE' ? (
-          <MessageImage message={item} onPreview={onPreview} />
-        ) : item.type === 'VIDEO' ? (
-          <MessageVideo message={item} onPreview={onPreview} />
-        ) : null
-      }
+      renderItem={({ item }) => {
+        if (item.type === 'DATE') {
+          return <DateSeparator date={item.date} />;
+        }
+        if (item.id.startsWith('fake-')) {
+          return <ProgressBubble message={item} />;
+        }
+        switch (item.type) {
+          case 'TEXT':
+            return <MessageBubble message={item} />;
+          case 'IMAGE':
+            return <MessageImage message={item} onPreview={onPreview} />;
+          case 'VIDEO':
+            return <MessageVideo message={item} onPreview={onPreview} />;
+          default:
+            return null;
+        }
+      }}
       contentContainerStyle={{ padding: 16 }}
       inverted={true}
       onEndReached={onEndReached}

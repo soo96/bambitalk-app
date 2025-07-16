@@ -9,6 +9,7 @@ export interface MessageItem {
   date: string;
   time: string;
   isMe: boolean;
+  uploadProgress?: number;
 }
 
 export interface ReceiveMessageDto {
