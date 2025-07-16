@@ -4,6 +4,7 @@ import { MessageItem } from '@/types/chat';
 import { groupMessagesWithDateSeparators } from '@/utils/messageUtil';
 import DateSeparator from './DateSeparator';
 import MessageImage from './MessageImage';
+import MessageVideo from './MessageVideo';
 
 interface MessageListProps {
   messages: MessageItem[];
@@ -24,9 +25,11 @@ const MessageList = ({ messages, onEndReached }: MessageListProps) => {
           <DateSeparator date={item.date} />
         ) : item.type === 'TEXT' ? (
           <MessageBubble message={item} />
-        ) : (
+        ) : item.type === 'IMAGE' ? (
           <MessageImage message={item} />
-        )
+        ) : item.type === 'VIDEO' ? (
+          <MessageVideo message={item} />
+        ) : null
       }
       contentContainerStyle={{ padding: 16 }}
       inverted={true}
