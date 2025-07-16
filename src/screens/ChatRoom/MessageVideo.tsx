@@ -19,15 +19,21 @@ const MessageVideo = ({ message }: Props) => {
 
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
-      <View style={styles.bubble}>
         <Video
           source={{ uri: videoUrl }}
           style={[styles.video, { aspectRatio }]}
           resizeMode="contain"
           paused={true}
-          controls={true}
+          onLoad={(data) => {
+            const { width, height } = data.naturalSize;
+            if (width && height) {
+              setAspectRatio(width / height);
+            }
+          }}
         />
-      </View>
+        <View style={styles.playOverlay}>
+          <PlayIcon color={COLORS.WHITE} size={20} />
+        </View>
       <View style={styles.timeBoxRight}>
         {isMe && !isRead && (
           <Text style={styles.readCount}>
@@ -58,14 +64,19 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     flexDirection: 'row-reverse',
   },
-  bubble: {
-    padding: 2,
-    borderRadius: 10,
-    backgroundColor: COLORS.GRAY_LIGHT,
-  },
   video: {
-    width: 250,
+    maxWidth: 250,
+    width: '100%',
     borderRadius: 8,
+  },
+  playOverlay: {
+    position: 'absolute',
+    top: '45%',
+    left: '48%',
+    transform: [{ translateX: -24 }, { translateY: -24 }],
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    borderRadius: 30,
+    padding: 12,
   },
   timeBoxRight: {
     alignItems: 'flex-end',
