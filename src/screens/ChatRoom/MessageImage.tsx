@@ -1,20 +1,32 @@
 import COLORS from '@/constants/colors';
-import { View, Text, StyleSheet } from 'react-native';
-import { Bold, HeartIcon } from 'lucide-react-native';
+import { View, Text, StyleSheet, Image } from 'react-native';
+import { HeartIcon } from 'lucide-react-native';
 import { MessageItem } from '@/types/chat';
+import { useEffect, useState } from 'react';
 
 interface Props {
   message: MessageItem;
 }
 
-const MessageBubble = ({ message }: Props) => {
-  const { content, isMe, isRead, time } = message;
+const MessageImage = ({ message }: Props) => {
+  const { content: imageUrl, isMe, isRead, time } = message;
+  const [aspectRatio, setAspectRatio] = useState(1);
+
+  useEffect(() => {
+    if (imageUrl) {
+      Image.getSize(imageUrl, (width, height) => {
+        setAspectRatio(width / height);
+      });
+    }
+  }, [imageUrl]);
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
-      <View
-        style={[styles.bubble, isMe ? styles.bubbleRight : styles.bubbleLeft]}
-      >
-        <Text>{content}</Text>
+      <View style={styles.bubble}>
+        <Image
+          source={{ uri: imageUrl }}
+          style={[styles.image, { aspectRatio }]}
+          resizeMode="contain"
+        />
       </View>
       <View style={styles.timeBoxRight}>
         {isMe && !isRead && (
@@ -47,16 +59,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row-reverse',
   },
   bubble: {
-    padding: 10,
+    padding: 2,
     borderRadius: 10,
+    backgroundColor: COLORS.GRAY_LIGHT,
   },
-  bubbleLeft: {
-    backgroundColor: COLORS.CHAT_SECONDARY,
-    borderTopLeftRadius: 0,
-  },
-  bubbleRight: {
-    backgroundColor: COLORS.CHAT_PRIMARY,
-    borderTopRightRadius: 0,
+  image: {
+    width: 250,
+    borderRadius: 8,
   },
   timeBoxRight: {
     alignItems: 'flex-end',
@@ -71,4 +80,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default MessageBubble;
+export default MessageImage;

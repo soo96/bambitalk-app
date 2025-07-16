@@ -1,31 +1,41 @@
 import COLORS from '@/constants/colors';
 import { useState } from 'react';
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-} from 'react-native';
+import { View, TextInput, StyleSheet, TouchableOpacity } from 'react-native';
+import { XIcon, PlusIcon, ArrowUpIcon } from 'lucide-react-native';
+import { SendMessagePayload } from '@/types/chat';
 
 interface ChatInputProps {
-  onPressSend: (content: string) => void;
+  onPressSend: (payload: SendMessagePayload) => void;
+  onPressPlus: () => void;
+  onPressClose: () => void;
+  showActions: boolean;
 }
 
-const ChatInput = ({ onPressSend }: ChatInputProps) => {
+const ChatInput = ({
+  onPressSend,
+  onPressPlus,
+  onPressClose,
+  showActions,
+}: ChatInputProps) => {
   const [text, setText] = useState('');
+  const hasText = !!text.trim();
 
   const handlePress = () => {
-    if (!text.trim()) return;
+    if (!hasText) return;
 
-    onPressSend(text);
+    onPressSend({
+      type: 'TEXT',
+      content: text,
+    });
     setText('');
   };
 
+  const handleActionButton = showActions ? onPressClose : onPressPlus;
+
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.plusButton}>
-        <Text style={styles.plus}>+</Text>
+      <TouchableOpacity style={styles.plusButton} onPress={handleActionButton}>
+        {showActions ? <XIcon /> : <PlusIcon />}
       </TouchableOpacity>
       <TextInput
         style={styles.input}
@@ -34,8 +44,12 @@ const ChatInput = ({ onPressSend }: ChatInputProps) => {
         placeholderTextColor={COLORS.GRAY_DARK}
         onChangeText={setText}
       />
-      <TouchableOpacity style={styles.sendButton} onPress={handlePress}>
-        <Text style={styles.arrow}>↑</Text>
+      <TouchableOpacity
+        style={[styles.sendButton, !hasText && styles.sendButtonDisabled]}
+        onPress={handlePress}
+        disabled={!hasText}
+      >
+        <ArrowUpIcon />
       </TouchableOpacity>
     </View>
   );
@@ -78,8 +92,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  arrow: {
-    fontSize: 20,
+  sendButtonDisabled: {
+    opacity: 0.3,
   },
 });
 

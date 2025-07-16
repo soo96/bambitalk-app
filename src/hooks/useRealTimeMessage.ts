@@ -1,10 +1,10 @@
-import { Message } from '@/types/chat';
+import { MessageItem } from '@/types/chat';
 import { useCallback, useState } from 'react';
 
 export const useRealTimeMessage = () => {
-  const [realtimeMessages, setRealtimeMessages] = useState<Message[]>([]);
+  const [realtimeMessages, setRealtimeMessages] = useState<MessageItem[]>([]);
 
-  const addRealtimeMessage = useCallback((message: Message) => {
+  const addRealtimeMessage = useCallback((message: MessageItem) => {
     setRealtimeMessages((prev) => [message, ...prev]);
   }, []);
 

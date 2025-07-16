@@ -6,9 +6,8 @@ import { BottomTabNavigationProp } from '@react-navigation/bottom-tabs';
 import { BottomTabParamList, RootStackParamList } from '@/types/navigation';
 import COLORS from '@/constants/colors';
 import { CHAT_INPUT_HEIGHT } from '@/constants/styles';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { useChatSocket } from '@/hooks/useChatSocket';
-import { ReceiveMessageDto } from '@/types/chat';
 import { useAuthStore } from '@/stores/useAuthStore';
 import LoadingOverlay from '@/components/LoadingOverlay';
 import {
@@ -20,6 +19,8 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
 import { formatMessage, formatMessageList } from '@/utils/messageUtil';
 import { useRealTimeMessage } from '@/hooks/useRealTimeMessage';
+import ChatActionBox from './ChatActionBox';
+import { ReceiveMessageDto } from '@/types/chat';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
@@ -37,6 +38,7 @@ const ChatRoom = () => {
   } = useRealTimeMessage();
   const insets = useSafeAreaInsets();
   const offset = insets.top + CHAT_INPUT_HEIGHT;
+  const [showActions, setShowActions] = useState(false);
 
   if (!hydrated) {
     return <LoadingOverlay visible={true} />;
@@ -59,7 +61,7 @@ const ChatRoom = () => {
     markMessagesAsRead();
   }, [markMessagesAsRead]);
 
-  const { connect, disconnect, sendMessage, readAllMessages } = useChatSocket({
+  const { connect, disconnect, sendMessage } = useChatSocket({
     handleMessageReceived,
     handleUpdateReadStatus,
   });
@@ -85,14 +87,11 @@ const ChatRoom = () => {
 
   useFocusEffect(
     useCallback(() => {
-      clearRealtimeMessages;
-      console.log('focus');
+      clearRealtimeMessages();
       connect();
       refetchMessages();
-      readAllMessages();
 
       return () => {
-        console.log('unfocus');
         disconnect();
       };
     }, []),
@@ -106,8 +105,18 @@ const ChatRoom = () => {
     >
       <View style={styles.container}>
         <MessageList messages={allMessages} onEndReached={handleEndReached} />
-        <ChatInput onPressSend={sendMessage} />
+        <ChatInput
+          onPressSend={sendMessage}
+          onPressPlus={() => setShowActions(true)}
+          onPressClose={() => setShowActions(false)}
+          showActions={showActions}
+        />
       </View>
+      <ChatActionBox
+        visible={showActions}
+        sendMessage={sendMessage}
+        onClose={() => setShowActions(false)}
+      />
       <LoadingOverlay visible={isLoading} />
     </KeyboardAvoidingView>
   );

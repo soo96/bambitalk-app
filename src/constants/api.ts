@@ -10,7 +10,8 @@ export const API_PATH = {
   SCHEDULES: API_PREFIX + '/schedules',
   CHILDREN: API_PREFIX + '/children',
   NOTIFICATIONS: API_PREFIX + '/notifications',
-  USERS: API_PREFIX + 'users/me',
+  USERS: API_PREFIX + '/users/me',
+  FILE: API_PREFIX + '/files',
 };
 
 export const STALE_TIME = 1000 * 10; // 1분

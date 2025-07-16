@@ -87,5 +87,11 @@
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>사진 선택을 위해 갤러리에 접근합니다.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>채팅 사진을 저장하기 위해 갤러리에 추가합니다.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>카메라 사용 권한</string>
 </dict>
 </plist>
