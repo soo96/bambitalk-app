@@ -6,13 +6,19 @@ import {
   StyleSheet,
   TouchableWithoutFeedback,
   Animated,
+  Alert,
+  Platform,
 } from 'react-native';
 import Video from 'react-native-video';
-import { X } from 'lucide-react-native';
+import { X, Download } from 'lucide-react-native';
+import { useEffect, useRef, useState } from 'react';
 import COLORS from '@/constants/colors';
 import { MessageType } from '@/types/chat';
-import { useEffect, useRef, useState } from 'react';
+import RNFS from 'react-native-fs';
+import { CameraRoll } from '@react-native-camera-roll/camera-roll';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import axios from 'axios';
+import { fromByteArray } from 'base64-js';
 
 interface Props {
   visible: boolean;
@@ -34,6 +40,7 @@ const MediaPreviewModal = ({ visible, url, type, onClose }: Props) => {
       duration: 200,
       useNativeDriver: true,
     }).start();
+    setControlsVisible(!controlsVisible);
   };
 
   useEffect(() => {
@@ -41,7 +48,33 @@ const MediaPreviewModal = ({ visible, url, type, onClose }: Props) => {
       setControlsVisible(false);
       opacity.setValue(0);
     }
-  }, [visible]);
+  }, [visible, opacity]);
+
+  const handleDownload = async () => {
+    try {
+      const fileExt = type === 'VIDEO' ? 'mp4' : 'jpg';
+      const fileName = `bambi_${Date.now()}.${fileExt}`;
+      const downloadPath =
+        Platform.OS === 'ios'
+          ? `${RNFS.TemporaryDirectoryPath}${fileName}`
+          : `${RNFS.CachesDirectoryPath}/${fileName}`;
+
+      const response = await axios.get(url, { responseType: 'arraybuffer' });
+      const base64String = fromByteArray(new Uint8Array(response.data));
+      const fileUri = `file://${downloadPath}`;
+
+      await RNFS.writeFile(downloadPath, base64String, 'base64');
+
+      await CameraRoll.saveAsset(fileUri, {
+        type: type === 'VIDEO' ? 'video' : 'photo',
+      });
+
+      Alert.alert('다운로드 완료', '갤러리에 저장되었습니다.');
+    } catch (err) {
+      console.error('다운로드 실패:', err);
+      Alert.alert('실패', '파일을 저장하는 중 문제가 발생했습니다.');
+    }
+  };
 
   return (
     <Modal visible={visible} transparent animationType="fade">
@@ -50,7 +83,13 @@ const MediaPreviewModal = ({ visible, url, type, onClose }: Props) => {
           <Animated.View
             style={[styles.topBar, { paddingTop: insets.top + 10, opacity }]}
           >
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+            <TouchableOpacity
+              onPress={handleDownload}
+              style={styles.iconButton}
+            >
+              <Download color={COLORS.WHITE} size={24} />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={onClose} style={styles.iconButton}>
               <X color={COLORS.WHITE} size={28} />
             </TouchableOpacity>
           </Animated.View>
@@ -79,7 +118,7 @@ const MediaPreviewModal = ({ visible, url, type, onClose }: Props) => {
 const styles = StyleSheet.create({
   modalBackground: {
     flex: 1,
-    backgroundColor: 'black',
+    backgroundColor: COLORS.BLACK,
   },
   topBar: {
     position: 'absolute',
@@ -88,10 +127,11 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0,0,0,0.9)',
     flexDirection: 'row',
     justifyContent: 'flex-end',
-    paddingHorizontal: 20,
+    paddingHorizontal: 16,
     zIndex: 10,
+    gap: 16,
   },
-  closeButton: {
+  iconButton: {
     padding: 8,
   },
   media: {
