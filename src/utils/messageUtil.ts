@@ -1,4 +1,9 @@
-import { MessageItem, ReceiveMessageDto, RenderItem } from '@/types/chat';
+import {
+  MessageItem,
+  MessageType,
+  ReceiveMessageDto,
+  RenderItem,
+} from '@/types/chat';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 
@@ -27,21 +32,39 @@ export const formatMessageList = (
 export const groupMessagesWithDateSeparators = (messages: MessageItem[]) => {
   const result: RenderItem[] = [];
 
-  let lastDate = '';
-
-  messages.forEach((msg: MessageItem) => {
-    const messageDate = format(msg.sentAt, 'yyyy.MM.dd', {
-      locale: ko,
-    });
-
-    if (messageDate !== lastDate && result.length > 0) {
-      result.push({ type: 'DATE', date: messageDate });
-    }
-
-    lastDate = messageDate;
+  messages.forEach((msg: MessageItem, index) => {
+    const messageDate = format(msg.sentAt, 'yyyy.MM.dd', { locale: ko });
 
     result.push(msg);
+
+    const nextMsg = messages[index + 1];
+    const nextDate = nextMsg
+      ? format(nextMsg.sentAt, 'yyyy.MM.dd', { locale: ko })
+      : '';
+
+    if (messageDate !== nextDate) {
+      result.push({ type: 'DATE', date: messageDate });
+    }
   });
 
   return result;
+};
+
+export const makeFakeMessage = (
+  senderId: number,
+  type: MessageType,
+  content: string,
+) => {
+  return {
+    id: `fake-${Date.now()}`,
+    chatId: 0,
+    senderId,
+    type,
+    content,
+    isRead: false,
+    sentAt: new Date(),
+    date: format(new Date(), 'yyyy.MM.dd', { locale: ko }),
+    time: format(new Date(), 'a h:mm', { locale: ko }),
+    isMe: true,
+  };
 };

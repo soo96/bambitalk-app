@@ -1,26 +1,17 @@
-import { postFile } from '@/apis/file';
 import COLORS from '@/constants/colors';
-import { SendMessagePayload } from '@/types/chat';
 import { CameraIcon, ImageIcon } from 'lucide-react-native';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { launchCamera, launchImageLibrary } from 'react-native-image-picker';
-import ImageResizer from '@bam.tech/react-native-image-resizer';
 
 interface ChatActionBoxProps {
   visible: boolean;
-  sendMessage: (payload: SendMessagePayload) => void;
+  onUploadFile: (response: any) => void;
   onClose: () => void;
 }
 
 const ChatActionBox = ({
   visible,
-  sendMessage,
+  onUploadFile,
   onClose,
 }: ChatActionBoxProps) => {
   if (!visible) return null;
@@ -29,11 +20,11 @@ const ChatActionBox = ({
     onClose();
     launchImageLibrary(
       {
-        mediaType: 'photo',
+        mediaType: 'mixed',
         selectionLimit: 1,
         includeBase64: true,
       },
-      handleUploadFile,
+      onUploadFile,
     );
   };
 
@@ -44,42 +35,8 @@ const ChatActionBox = ({
         mediaType: 'photo',
         presentationStyle: 'popover',
       },
-      handleUploadFile,
+      onUploadFile,
     );
-  };
-
-  const handleUploadFile = async (response: any) => {
-    if (!response.assets || response.assets.length === 0) return;
-
-    const fileAsset = response.assets[0];
-
-    const resizedImage = await ImageResizer.createResizedImage(
-      fileAsset.uri!,
-      1024,
-      1024,
-      'JPEG',
-      70,
-    );
-
-    const formData = new FormData();
-    formData.append('file', {
-      uri:
-        Platform.OS === 'ios'
-          ? resizedImage.uri?.replace('file://', '')
-          : resizedImage.uri,
-      name: resizedImage.name ?? 'photo.jpg',
-      type: fileAsset.type ?? 'image/jpeg',
-    });
-
-    try {
-      const data = await postFile(formData);
-      sendMessage({
-        type: fileAsset.type.startsWith('video/') ? 'VIDEO' : 'IMAGE',
-        content: data.fileUrl,
-      });
-    } catch (error) {
-      console.error('파일 업로드 실패:', error);
-    }
   };
 
   return (

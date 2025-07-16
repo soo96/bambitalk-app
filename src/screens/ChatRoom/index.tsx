@@ -17,10 +17,17 @@ import {
 } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
-import { formatMessage, formatMessageList } from '@/utils/messageUtil';
+import {
+  formatMessage,
+  formatMessageList,
+  makeFakeMessage,
+} from '@/utils/messageUtil';
 import { useRealTimeMessage } from '@/hooks/useRealTimeMessage';
 import ChatActionBox from './ChatActionBox';
-import { ReceiveMessageDto } from '@/types/chat';
+import { MessageItem, MessageType, ReceiveMessageDto } from '@/types/chat';
+import MediaPreviewModal from './MediaPreviewModal';
+import ImageResizer from '@bam.tech/react-native-image-resizer';
+import { postFile } from '@/apis/file';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
@@ -39,6 +46,10 @@ const ChatRoom = () => {
   const insets = useSafeAreaInsets();
   const offset = insets.top + CHAT_INPUT_HEIGHT;
   const [showActions, setShowActions] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewType, setPreviewType] = useState<MessageType>('IMAGE');
+  const [pendingMessages, setPendingMessages] = useState<MessageItem[]>([]);
 
   if (!hydrated) {
     return <LoadingOverlay visible={true} />;
@@ -48,6 +59,12 @@ const ChatRoom = () => {
     navigation.replace('Login');
     return;
   }
+
+  const handlePreview = (url: string, type: MessageType) => {
+    setPreviewUrl(url);
+    setPreviewType(type);
+    setPreviewVisible(true);
+  };
 
   const handleMessageReceived = useCallback(
     (msg: ReceiveMessageDto) => {
@@ -77,11 +94,76 @@ const ChatRoom = () => {
 
   const flatQueryPages = data?.pages.flatMap((page) => page) ?? [];
   const fetchedLastPages = formatMessageList(flatQueryPages, user.userId);
-  const allMessages = [...realtimeMessages, ...fetchedLastPages];
+  const allMessages = [
+    ...pendingMessages,
+    ...realtimeMessages,
+    ...fetchedLastPages,
+  ];
 
   const handleEndReached = () => {
     if (hasNextPage && !isFetchingNextPage) {
       fetchNextPage();
+    }
+  };
+
+  const handleUploadFile = async (response: any) => {
+    if (!response.assets || response.assets.length === 0) return;
+
+    let fileAsset = response.assets[0];
+    const isVideo = fileAsset.type?.startsWith('video/');
+    let type: MessageType = isVideo ? 'VIDEO' : 'IMAGE';
+    let uploadUri = fileAsset.uri!;
+    let mimeType = fileAsset.type ?? 'image/jpeg';
+    let name = fileAsset.fileName ?? 'photo.jpg';
+
+    if (!isVideo) {
+      const resized = await ImageResizer.createResizedImage(
+        uploadUri,
+        1024,
+        1024,
+        'JPEG',
+        70,
+      );
+      uploadUri = resized.uri;
+      mimeType = 'image/jpeg';
+      name = resized.name ?? name;
+    }
+
+    const fakeMessage: MessageItem = makeFakeMessage(
+      user.userId,
+      type,
+      uploadUri,
+    );
+
+    setPendingMessages((prev) => [...prev, fakeMessage]);
+
+    const formData = new FormData();
+    formData.append('file', {
+      uri:
+        Platform.OS === 'ios'
+          ? fileAsset.uri?.replace('file://', '')
+          : fileAsset.uri,
+      name: fileAsset.name ?? 'photo.jpg',
+      type: fileAsset.type ?? 'image/jpeg',
+    });
+
+    try {
+      const data = await postFile(formData, (progress: number) => {
+        setPendingMessages((prev) =>
+          prev.map((msg) =>
+            msg.id === fakeMessage.id
+              ? { ...msg, uploadProgress: progress }
+              : msg,
+          ),
+        );
+      });
+
+      setPendingMessages((prev) =>
+        prev.filter((msg) => msg.id !== fakeMessage.id),
+      );
+      sendMessage({ type, content: data.fileUrl });
+    } catch (error) {
+      console.error('파일 업로드 실패:', error);
     }
   };
 
@@ -104,7 +186,11 @@ const ChatRoom = () => {
       keyboardVerticalOffset={offset}
     >
       <View style={styles.container}>
-        <MessageList messages={allMessages} onEndReached={handleEndReached} />
+        <MessageList
+          messages={allMessages}
+          onEndReached={handleEndReached}
+          onPreview={handlePreview}
+        />
         <ChatInput
           onPressSend={sendMessage}
           onPressPlus={() => setShowActions(true)}
@@ -114,10 +200,16 @@ const ChatRoom = () => {
       </View>
       <ChatActionBox
         visible={showActions}
-        sendMessage={sendMessage}
+        onUploadFile={handleUploadFile}
         onClose={() => setShowActions(false)}
       />
       <LoadingOverlay visible={isLoading} />
+      <MediaPreviewModal
+        visible={previewVisible}
+        url={previewUrl}
+        type={previewType}
+        onClose={() => setPreviewVisible(false)}
+      />
     </KeyboardAvoidingView>
   );
 };
