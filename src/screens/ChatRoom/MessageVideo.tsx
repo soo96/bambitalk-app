@@ -1,16 +1,17 @@
 import COLORS from '@/constants/colors';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import Video from 'react-native-video';
-import { HeartIcon } from 'lucide-react-native';
-import { MessageItem } from '@/types/chat';
+import { HeartIcon, PlayIcon } from 'lucide-react-native';
+import { MessageItem, MessageType } from '@/types/chat';
 import { useEffect, useState } from 'react';
 
 interface Props {
   message: MessageItem;
+  onPreview: (url: string, type: MessageType) => void;
 }
 
-const MessageVideo = ({ message }: Props) => {
-  const { content: videoUrl, isMe, isRead, time } = message;
+const MessageVideo = ({ message, onPreview }: Props) => {
+  const { content: videoUrl, isMe, isRead, time, type } = message;
   const [aspectRatio, setAspectRatio] = useState(1);
 
   useEffect(() => {
@@ -19,6 +20,7 @@ const MessageVideo = ({ message }: Props) => {
 
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
+      <TouchableOpacity onPress={() => onPreview(videoUrl, type)}>
         <Video
           source={{ uri: videoUrl }}
           style={[styles.video, { aspectRatio }]}
@@ -34,6 +36,7 @@ const MessageVideo = ({ message }: Props) => {
         <View style={styles.playOverlay}>
           <PlayIcon color={COLORS.WHITE} size={20} />
         </View>
+      </TouchableOpacity>
       <View style={styles.timeBoxRight}>
         {isMe && !isRead && (
           <Text style={styles.readCount}>

@@ -20,7 +20,8 @@ import { useMessagesInfiniteQuery } from '@/hooks/useMessagesInfiniteQuery';
 import { formatMessage, formatMessageList } from '@/utils/messageUtil';
 import { useRealTimeMessage } from '@/hooks/useRealTimeMessage';
 import ChatActionBox from './ChatActionBox';
-import { ReceiveMessageDto } from '@/types/chat';
+import { MessageType, ReceiveMessageDto } from '@/types/chat';
+import MediaPreviewModal from './MediaPreviewModal';
 
 type ChatRoomScreenNavigationProp = CompositeNavigationProp<
   BottomTabNavigationProp<BottomTabParamList, 'ChatRoom'>,
@@ -39,6 +40,9 @@ const ChatRoom = () => {
   const insets = useSafeAreaInsets();
   const offset = insets.top + CHAT_INPUT_HEIGHT;
   const [showActions, setShowActions] = useState(false);
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState('');
+  const [previewType, setPreviewType] = useState<MessageType>('IMAGE');
 
   if (!hydrated) {
     return <LoadingOverlay visible={true} />;
@@ -48,6 +52,12 @@ const ChatRoom = () => {
     navigation.replace('Login');
     return;
   }
+
+  const handlePreview = (url: string, type: MessageType) => {
+    setPreviewUrl(url);
+    setPreviewType(type);
+    setPreviewVisible(true);
+  };
 
   const handleMessageReceived = useCallback(
     (msg: ReceiveMessageDto) => {
@@ -104,7 +114,11 @@ const ChatRoom = () => {
       keyboardVerticalOffset={offset}
     >
       <View style={styles.container}>
-        <MessageList messages={allMessages} onEndReached={handleEndReached} />
+        <MessageList
+          messages={allMessages}
+          onEndReached={handleEndReached}
+          onPreview={handlePreview}
+        />
         <ChatInput
           onPressSend={sendMessage}
           onPressPlus={() => setShowActions(true)}
@@ -118,6 +132,12 @@ const ChatRoom = () => {
         onClose={() => setShowActions(false)}
       />
       <LoadingOverlay visible={isLoading} />
+      <MediaPreviewModal
+        visible={previewVisible}
+        url={previewUrl}
+        type={previewType}
+        onClose={() => setPreviewVisible(false)}
+      />
     </KeyboardAvoidingView>
   );
 };

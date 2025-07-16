@@ -1,15 +1,16 @@
 import COLORS from '@/constants/colors';
-import { View, Text, StyleSheet, Image } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { HeartIcon } from 'lucide-react-native';
-import { MessageItem } from '@/types/chat';
+import { MessageItem, MessageType } from '@/types/chat';
 import { useEffect, useState } from 'react';
 
 interface Props {
   message: MessageItem;
+  onPreview: (url: string, type: MessageType) => void;
 }
 
-const MessageImage = ({ message }: Props) => {
-  const { content: imageUrl, isMe, isRead, time } = message;
+const MessageImage = ({ message, onPreview }: Props) => {
+  const { content: imageUrl, isMe, isRead, time, type } = message;
   const [aspectRatio, setAspectRatio] = useState(1);
 
   useEffect(() => {
@@ -21,13 +22,13 @@ const MessageImage = ({ message }: Props) => {
   }, [imageUrl]);
   return (
     <View style={[styles.container, isMe ? styles.right : styles.left]}>
-      <View style={styles.bubble}>
+      <TouchableOpacity onPress={() => onPreview(imageUrl, type)}>
         <Image
           source={{ uri: imageUrl }}
           style={[styles.image, { aspectRatio }]}
           resizeMode="contain"
         />
-      </View>
+      </TouchableOpacity>
       <View style={styles.timeBoxRight}>
         {isMe && !isRead && (
           <Text style={styles.readCount}>
@@ -57,11 +58,6 @@ const styles = StyleSheet.create({
   right: {
     alignSelf: 'flex-end',
     flexDirection: 'row-reverse',
-  },
-  bubble: {
-    padding: 2,
-    borderRadius: 10,
-    backgroundColor: COLORS.GRAY_LIGHT,
   },
   image: {
     width: 250,

@@ -1,6 +1,6 @@
 import { FlatList } from 'react-native';
 import MessageBubble from './MessageBubble';
-import { MessageItem } from '@/types/chat';
+import { MessageItem, MessageType } from '@/types/chat';
 import { groupMessagesWithDateSeparators } from '@/utils/messageUtil';
 import DateSeparator from './DateSeparator';
 import MessageImage from './MessageImage';
@@ -9,9 +9,14 @@ import MessageVideo from './MessageVideo';
 interface MessageListProps {
   messages: MessageItem[];
   onEndReached: () => void;
+  onPreview: (url: string, type: MessageType) => void;
 }
 
-const MessageList = ({ messages, onEndReached }: MessageListProps) => {
+const MessageList = ({
+  messages,
+  onEndReached,
+  onPreview,
+}: MessageListProps) => {
   const renderItems = groupMessagesWithDateSeparators(messages);
 
   return (
@@ -26,9 +31,9 @@ const MessageList = ({ messages, onEndReached }: MessageListProps) => {
         ) : item.type === 'TEXT' ? (
           <MessageBubble message={item} />
         ) : item.type === 'IMAGE' ? (
-          <MessageImage message={item} />
+          <MessageImage message={item} onPreview={onPreview} />
         ) : item.type === 'VIDEO' ? (
-          <MessageVideo message={item} />
+          <MessageVideo message={item} onPreview={onPreview} />
         ) : null
       }
       contentContainerStyle={{ padding: 16 }}

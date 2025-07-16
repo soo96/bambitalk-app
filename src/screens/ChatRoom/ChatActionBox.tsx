@@ -29,7 +29,7 @@ const ChatActionBox = ({
     onClose();
     launchImageLibrary(
       {
-        mediaType: 'photo',
+        mediaType: 'mixed',
         selectionLimit: 1,
         includeBase64: true,
       },
@@ -51,30 +51,33 @@ const ChatActionBox = ({
   const handleUploadFile = async (response: any) => {
     if (!response.assets || response.assets.length === 0) return;
 
-    const fileAsset = response.assets[0];
+    let fileAsset = response.assets[0];
+    const assetType = fileAsset.type.startsWith('video/') ? 'VIDEO' : 'IMAGE';
 
-    const resizedImage = await ImageResizer.createResizedImage(
-      fileAsset.uri!,
-      1024,
-      1024,
-      'JPEG',
-      70,
-    );
+    if (assetType === 'IMAGE') {
+      fileAsset = await ImageResizer.createResizedImage(
+        fileAsset.uri!,
+        1024,
+        1024,
+        'JPEG',
+        70,
+      );
+    }
 
     const formData = new FormData();
     formData.append('file', {
       uri:
         Platform.OS === 'ios'
-          ? resizedImage.uri?.replace('file://', '')
-          : resizedImage.uri,
-      name: resizedImage.name ?? 'photo.jpg',
+          ? fileAsset.uri?.replace('file://', '')
+          : fileAsset.uri,
+      name: fileAsset.name ?? 'photo.jpg',
       type: fileAsset.type ?? 'image/jpeg',
     });
 
     try {
       const data = await postFile(formData);
       sendMessage({
-        type: fileAsset.type.startsWith('video/') ? 'VIDEO' : 'IMAGE',
+        type: assetType,
         content: data.fileUrl,
       });
     } catch (error) {
