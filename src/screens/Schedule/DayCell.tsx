@@ -17,7 +17,6 @@ const DayCell = ({
   isSelected,
   isToday,
   isThisMonth,
-  hasTasks,
   hasDadSchedule,
   hasMomSchedule,
   onPress,
@@ -43,8 +42,8 @@ const DayCell = ({
         <Text style={[styles.dateText, { color: textColor }]}>{day}</Text>
       </View>
       <View style={styles.emojiContainer}>
-        {hasDadSchedule && <Text style={styles.emoji}>💙</Text>}
-        {hasMomSchedule && <Text style={styles.emoji}>🩷</Text>}
+        {hasDadSchedule && <Text style={styles.emoji}>🙋🏻‍♂️</Text>}
+        {hasMomSchedule && <Text style={styles.emoji}>🙋🏻‍♀️</Text>}
       </View>
     </TouchableOpacity>
   );
