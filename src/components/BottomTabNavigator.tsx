@@ -1,11 +1,11 @@
-import MyChildProfileScreen from '@/screens/MyChildProfile';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BottomTabBar from './BottomTabBar';
 import ScheduleScreen from '@/screens/Schedule';
 import ChatRoomScreen from '@/screens/ChatRoom';
 import { BottomTabParamList } from '@/types/navigation';
+import SettingScreen from '@/screens/Setting';
 
-const BottomTabNavigator = (appStateType: any) => {
+const BottomTabNavigator = () => {
   const Tab = createBottomTabNavigator<BottomTabParamList>();
 
   return (
@@ -14,11 +14,6 @@ const BottomTabNavigator = (appStateType: any) => {
       tabBar={(props) => <BottomTabBar {...props} />}
     >
       <Tab.Screen
-        name="MyChildProfile"
-        component={MyChildProfileScreen}
-        options={{ headerShown: false }}
-      />
-      <Tab.Screen
         name="Schedule"
         component={ScheduleScreen}
         options={{ headerShown: false }}
@@ -26,6 +21,11 @@ const BottomTabNavigator = (appStateType: any) => {
       <Tab.Screen
         name="ChatRoom"
         component={ChatRoomScreen}
+        options={{ headerShown: false }}
+      />
+      <Tab.Screen
+        name="Setting"
+        component={SettingScreen}
         options={{ headerShown: false }}
       />
     </Tab.Navigator>

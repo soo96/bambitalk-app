@@ -1,12 +1,12 @@
 import COLORS from '@/constants/colors';
 import { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { Baby, Calendar, MessageCircle } from 'lucide-react-native';
+import { Settings, Calendar, MessageCircle } from 'lucide-react-native';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 const ICONS = [
-  { Icon: Baby, label: '우리 아기' },
   { Icon: Calendar, label: '일정' },
   { Icon: MessageCircle, label: '채팅' },
+  { Icon: Settings, label: '설정' },
 ];
 
 const BottomTabBar = ({ state, navigation }: BottomTabBarProps) => {

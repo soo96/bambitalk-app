@@ -9,4 +9,5 @@ export type BottomTabParamList = {
   MyChildProfile: undefined;
   Schedule: undefined;
   ChatRoom: undefined;
+  Setting: undefined;
 };
