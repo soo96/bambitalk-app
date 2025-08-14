@@ -16,7 +16,17 @@ interface Props {
 }
 
 const ScheduleListItem = ({ schedule, onToggle, onPressItem }: Props) => {
-  const { scheduleId, title, description, time, color, isCompleted } = schedule;
+  const {
+    scheduleId,
+    title,
+    description,
+    time,
+    color,
+    isCompleted,
+    creatorRole,
+  } = schedule;
+
+  const emoji = creatorRole === 'DAD' ? '🙋🏻‍♂️' : '🙋🏻‍♀️';
 
   const handleToggle = () => {
     ReactNativeHapticFeedback.trigger('impactHeavy', {
@@ -39,6 +49,7 @@ const ScheduleListItem = ({ schedule, onToggle, onPressItem }: Props) => {
         ]}
       >
         <View style={styles.timeContainer}>
+          <Text style={styles.time}>{emoji}</Text>
           <Text style={styles.time}>{time}</Text>
         </View>
 
@@ -84,7 +95,7 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
   timeContainer: {
-    width: 50,
+    width: 40,
     alignItems: 'center',
   },
   time: {

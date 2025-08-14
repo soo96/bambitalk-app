@@ -12,6 +12,10 @@ export const API_PATH = {
   NOTIFICATIONS: API_PREFIX + '/notifications',
   USERS: API_PREFIX + '/users/me',
   FILE: API_PREFIX + '/files',
+  COUPLE: {
+    INVITE_CODE: API_PREFIX + '/couples/invite-code',
+    JOIN: API_PREFIX + '/couples/join',
+  },
 };
 
 export const STALE_TIME = 1000 * 10; // 1분
